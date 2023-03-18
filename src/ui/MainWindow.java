@@ -66,6 +66,9 @@ public class MainWindow {
 				hostGameBtn.setOpaque(true);
 				hostGameBtn.setBackground(new Color(15, 49, 66));
 			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
 		});
 		hostGameBtn.setForeground(new Color(235, 235, 235));
 		hostGameBtn.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
@@ -87,6 +90,10 @@ public class MainWindow {
 			public void mouseExited(MouseEvent e) {
 				hostGameBtn.setOpaque(true);
 				joinGameBtn.setBackground(new Color(15, 49, 66));
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				NicknameDialog.main(null);
 			}
 		});
 		joinGameBtn.setForeground(new Color(235, 235, 235));
