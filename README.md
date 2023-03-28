@@ -1,3 +1,3 @@
 # TicTacToe
 
-## Working Progress
+## Work In Progress
