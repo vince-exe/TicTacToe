@@ -68,6 +68,14 @@ public class MainWindow {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				NicknameDialog.main(null);
+				
+				if(NicknameDialog.doneBtnClicked) {
+					System.out.print("\nNickname: " + NicknameDialog.nickname);
+				}
+				else {
+					System.out.print("\nAnnullato..");
+				}
 			}
 		});
 		hostGameBtn.setForeground(new Color(235, 235, 235));
@@ -94,6 +102,13 @@ public class MainWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				NicknameDialog.main(null);
+				
+				if(NicknameDialog.doneBtnClicked) {
+					System.out.print("\nNickname: " + NicknameDialog.nickname);
+				}
+				else {
+					System.out.print("\nAnnullato..");
+				}
 			}
 		});
 		joinGameBtn.setForeground(new Color(235, 235, 235));
@@ -113,7 +128,6 @@ public class MainWindow {
 		frmTictactoe.getContentPane().add(lblNewLabel_1);
 		frmTictactoe.setTitle("TicTacToe");
 		frmTictactoe.setResizable(false);
-		frmTictactoe.setAlwaysOnTop(true);
 		frmTictactoe.setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/ui/resources/icon.png")));
 		frmTictactoe.setBounds(100, 100, 420, 380);
 		frmTictactoe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

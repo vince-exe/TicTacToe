@@ -1,7 +1,6 @@
 package ui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,15 +17,26 @@ import javax.swing.SwingConstants;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import utils.*;
+
+@SuppressWarnings("serial")
 public class NicknameDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-
+	
+	public static String nickname;
+	
+	public static boolean doneBtnClicked;
+	
+	private final int MIN_LEN_NICKNAME = 2;
+	private final int MAX_LEN_NICKNAME = 15;
+	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
+			doneBtnClicked = false;
 			NicknameDialog dialog = new NicknameDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setModalityType(DEFAULT_MODALITY_TYPE);
@@ -40,7 +50,6 @@ public class NicknameDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public NicknameDialog() {
-		setAlwaysOnTop(true);
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setTitle("Nickname Dialog");
@@ -87,6 +96,19 @@ public class NicknameDialog extends JDialog {
 			public void mouseExited(MouseEvent e) {
 				doneBtn.setOpaque(true);
 				doneBtn.setBackground(new Color(15, 49, 66));
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String nickname_ = nicknameBox.getText();
+				if(nickname_.length() < MIN_LEN_NICKNAME || nickname_.length() > MAX_LEN_NICKNAME) { 
+					AlertClass.showWarningBox(null, "Invalid Nickname", "Nickname must be > " + MIN_LEN_NICKNAME + " and < " + MAX_LEN_NICKNAME);
+				}
+				else {
+					nickname = nickname_;
+					doneBtnClicked = true;
+					AlertClass.showMsgBox(null, "Success", "Successfully saved the nickname");
+					dispose();
+				}
 			}
 		});
 		doneBtn.setForeground(new Color(235, 235, 235));
