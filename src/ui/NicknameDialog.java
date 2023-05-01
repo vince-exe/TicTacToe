@@ -39,6 +39,7 @@ public class NicknameDialog extends JDialog {
 			doneBtnClicked = false;
 			NicknameDialog dialog = new NicknameDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setLocationRelativeTo(null);
 			dialog.setModalityType(DEFAULT_MODALITY_TYPE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -115,7 +116,7 @@ public class NicknameDialog extends JDialog {
 		doneBtn.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
 		doneBtn.setFocusPainted(false);
 		doneBtn.setContentAreaFilled(false);
-		doneBtn.setBorder(new LineBorder(new Color(2, 21, 31), 6, true));
+		doneBtn.setBorder(new LineBorder(new Color(2, 21, 31), 4, true));
 		doneBtn.setBackground(new Color(15, 49, 66));
 		doneBtn.setBounds(64, 156, 165, 52);
 		contentPanel.add(doneBtn);

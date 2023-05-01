@@ -15,15 +15,19 @@ import java.awt.event.MouseEvent;
 
 public class MainWindow {
 	private JFrame frmTictactoe;
-
+	
+	public static boolean isHosting;
+	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		MainWindow.isHosting = false;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();
+					window.frmTictactoe.setLocationRelativeTo(null);
 					window.frmTictactoe.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -54,6 +58,7 @@ public class MainWindow {
 		lblNewLabel.setBounds(60, 11, 274, 61);
 		frmTictactoe.getContentPane().add(lblNewLabel);
 		
+		/* HOST */
 		JButton hostGameBtn = new JButton("Host Game");
 		hostGameBtn.addMouseListener(new MouseAdapter() {
 			@Override
@@ -71,10 +76,9 @@ public class MainWindow {
 				NicknameDialog.main(null);
 				
 				if(NicknameDialog.doneBtnClicked) {
+					MainWindow.isHosting = true;
 					System.out.print("\nNickname: " + NicknameDialog.nickname);
-				}
-				else {
-					System.out.print("\nAnnullato..");
+					IpPortDialog.main(null);
 				}
 			}
 		});
@@ -87,6 +91,7 @@ public class MainWindow {
 		hostGameBtn.setBounds(76, 114, 249, 61);
 		frmTictactoe.getContentPane().add(hostGameBtn);
 		
+		/* CONNECT */
 		JButton joinGameBtn = new JButton("Join Game");
 		joinGameBtn.addMouseListener(new MouseAdapter() {
 			@Override
@@ -96,7 +101,7 @@ public class MainWindow {
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				hostGameBtn.setOpaque(true);
+				joinGameBtn.setOpaque(true);
 				joinGameBtn.setBackground(new Color(15, 49, 66));
 			}
 			@Override
@@ -104,10 +109,9 @@ public class MainWindow {
 				NicknameDialog.main(null);
 				
 				if(NicknameDialog.doneBtnClicked) {
+					MainWindow.isHosting = false;
 					System.out.print("\nNickname: " + NicknameDialog.nickname);
-				}
-				else {
-					System.out.print("\nAnnullato..");
+					IpPortDialog.main(null);
 				}
 			}
 		});
