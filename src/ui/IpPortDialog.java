@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 public class IpPortDialog extends JDialog {
 
@@ -44,8 +45,21 @@ public class IpPortDialog extends JDialog {
 		}
 	}
 	
-	private boolean connectClient() {
-		return false;
+	private boolean checkClient() {
+		try {
+			IpPortDialog.ip = ipBox.getText();
+			IpPortDialog.port = Integer.parseInt(portBox.getText());
+			
+			Client client = new Client(IpPortDialog.ip, IpPortDialog.port);
+			
+			client.connect(15000);
+			client.close();
+		}
+		catch(Exception e) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	private boolean checkServer() {
@@ -56,17 +70,36 @@ public class IpPortDialog extends JDialog {
 			/* test */
 			System.out.print("\nIp: " + IpPortDialog.ip);
 			System.out.print("\nPort: " + IpPortDialog.port);
+			
+			final Server server = new Server(IpPortDialog.ip, IpPortDialog.port);
+			
+			Thread thread = new Thread() {
+				public void run() {
+					try {
+						server.accept(15000);
+						IpPortDialog.success = true;
+					} 
+					catch (IOException e) {
+						IpPortDialog.success = false;
+					}
+				}
+			};
+			thread.start();
+			
+			/* try to connect at the server (localhost) */
+			Client client = new Client("127.0.0.1", IpPortDialog.port);
+			client.connect(15000);
+			
+			thread.join();
+			server.close();
+			client.close();
+			
+			return IpPortDialog.success;
 		}
 		catch(Exception e) {
-			utils.AlertClass.showErrBox(null, "Invalid Credentials", e.getMessage());
+			e.printStackTrace();
 			return false;
 		}
-
-		return true;
-	}
-	
-	private boolean checkClient() {
-		return false;
 	}
 	
 	/**
@@ -118,9 +151,23 @@ public class IpPortDialog extends JDialog {
 			public void mouseClicked(MouseEvent e) {
 				if(MainWindow.isHosting) {
 					IpPortDialog.success = checkServer();
+					
+					if(IpPortDialog.success) {
+						utils.AlertClass.showMsgBox(null, "Success", "Successfully started the server");
+					}
+					else {
+						utils.AlertClass.showErrBox(null, "Hosting Error", "The software failed to host the game..");
+					}
 				}
 				else {
+					IpPortDialog.success = checkClient();
 					
+					if(IpPortDialog.success) {
+						utils.AlertClass.showMsgBox(null, "Success", "Successfully connected to the server");
+					}
+					else {
+						utils.AlertClass.showErrBox(null, "Hosting Error", "Can't connect to the server");
+					}
 				}
 				
 				dispose();

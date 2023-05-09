@@ -79,6 +79,10 @@ public class MainWindow {
 					MainWindow.isHosting = true;
 					System.out.print("\nNickname: " + NicknameDialog.nickname);
 					IpPortDialog.main(null);
+					
+					if(IpPortDialog.success) {
+						/** TODO **/
+					}
 				}
 			}
 		});

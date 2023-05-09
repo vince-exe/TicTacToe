@@ -28,31 +28,26 @@ public class Server {
 		server = new ServerSocket(port, 50, addr); 
 	} 
 	
-	public boolean shutdown() {
-		try {
-			inputClient.close();
-			inputKeyBoard.close();
-			outputClient.close();
-			
-			server.close();
-			socket.close();
-			
-			return true;
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+	public void shutdown() throws IOException {	
+		inputClient.close();
+		inputKeyBoard.close();
+		outputClient.close();
+		socket.close();
+		server.close();
 	}
 	
-	public boolean accept(int timeout) throws IOException {
+	public void close() throws IOException {
+		socket.close();
+		inputClient.close();
+		server.close();
+	}
+	
+	public void accept(int timeout) throws IOException {
 		server.setSoTimeout(timeout);
 			
 		socket = server.accept(); 
 			
 		// takes input from the client socket 
 		inputClient = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
-			
-		return true;
 	}	
 }

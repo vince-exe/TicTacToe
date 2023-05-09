@@ -5,8 +5,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Client {
 	private Socket socket;
@@ -26,39 +26,30 @@ public class Client {
 	public Client(String address, int port) {
 		this.address = address;
 		this.port = port;
+		
+		this.socket = new Socket();
 	}
 	
-	public boolean shutdown() {
-		try {
-			inputKeyBoard.close();
-			inputServer.close();
-			outputServer.close();
-			socket.close();
-			
-			return true;
-
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+	public void shutdown() throws IOException {
+		inputKeyBoard.close();
+		outputServer.close();
+		inputServer.close();
+		socket.close();	
 	}
 	
-	public boolean connect() {
-		try {
-			socket = new Socket(address, port);
-			
-			// we 'ready' the input reader 
-			inputKeyBoard = new BufferedReader(new InputStreamReader(System.in));
+	public void close() throws IOException {
+		inputKeyBoard.close();
+		outputServer.close();
+		socket.close();
+	}
+	
+	public void connect(int conn_timeout) throws IOException {
+		socket.connect(new InetSocketAddress(this.address, this.port), conn_timeout);
+		
+		// we 'ready' the input reader 
+		inputKeyBoard = new BufferedReader(new InputStreamReader(System.in));
 
-			// and the output that is connected to the Socket
-			outputServer = new DataOutputStream(socket.getOutputStream()); 
-			
-			return true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+		// and the output that is connected to the Socket
+		outputServer = new DataOutputStream(socket.getOutputStream()); 
 	}
 }
