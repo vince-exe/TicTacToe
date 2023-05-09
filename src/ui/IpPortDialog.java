@@ -1,7 +1,7 @@
 package ui;
 
+import network.*;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,6 +24,8 @@ public class IpPortDialog extends JDialog {
 	private JTextField portBox;
 	
 	public static boolean success;
+	public static int port;
+	public static String ip;
 	
 	/**
 	 * Launch the application.
@@ -42,8 +44,25 @@ public class IpPortDialog extends JDialog {
 		}
 	}
 	
-	private boolean checkServer() {
+	private boolean connectClient() {
 		return false;
+	}
+	
+	private boolean checkServer() {
+		try {
+			IpPortDialog.port = Integer.parseInt(portBox.getText());
+			IpPortDialog.ip = ipBox.getText();
+			
+			/* test */
+			System.out.print("\nIp: " + IpPortDialog.ip);
+			System.out.print("\nPort: " + IpPortDialog.port);
+		}
+		catch(Exception e) {
+			utils.AlertClass.showErrBox(null, "Invalid Credentials", e.getMessage());
+			return false;
+		}
+
+		return true;
 	}
 	
 	private boolean checkClient() {
@@ -98,11 +117,13 @@ public class IpPortDialog extends JDialog {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(MainWindow.isHosting) {
-					
+					IpPortDialog.success = checkServer();
 				}
 				else {
 					
 				}
+				
+				dispose();
 			}
 		});
 		doneBtn.setForeground(new Color(235, 235, 235));

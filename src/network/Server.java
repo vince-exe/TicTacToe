@@ -25,7 +25,6 @@ public class Server {
 	public Server(String ip, int port) throws IOException {
 		InetAddress addr = InetAddress.getByName(ip);
 		
-		// we start our server
 		server = new ServerSocket(port, 50, addr); 
 	} 
 	
@@ -46,20 +45,14 @@ public class Server {
 		}
 	}
 	
-	public boolean accept(int timeout) {
-		try {
-			server.setSoTimeout(timeout);
+	public boolean accept(int timeout) throws IOException {
+		server.setSoTimeout(timeout);
 			
-			socket = server.accept(); 
+		socket = server.accept(); 
 			
-			// takes input from the client socket 
-			inputClient = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
+		// takes input from the client socket 
+		inputClient = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
 			
-			return true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+		return true;
 	}	
 }
