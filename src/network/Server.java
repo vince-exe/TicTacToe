@@ -1,7 +1,5 @@
 package network;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,10 +13,7 @@ public class Server {
 	
 	// read the message from the client
 	private DataInputStream inputClient;
-	
-	// read the message from the System.in
-	private BufferedReader inputKeyBoard;
-	
+
 	// send the message to the client socket
 	private DataOutputStream outputClient;
 	
@@ -30,15 +25,8 @@ public class Server {
 	
 	public void shutdown() throws IOException {	
 		inputClient.close();
-		inputKeyBoard.close();
 		outputClient.close();
 		socket.close();
-		server.close();
-	}
-	
-	public void close() throws IOException {
-		socket.close();
-		inputClient.close();
 		server.close();
 	}
 	
@@ -48,6 +36,16 @@ public class Server {
 		socket = server.accept(); 
 			
 		// takes input from the client socket 
-		inputClient = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
+		inputClient = new DataInputStream(socket.getInputStream()); 
+		// send messages to the client socket
+		outputClient = new DataOutputStream(socket.getOutputStream());
 	}	
+	
+	public void send(String msg) throws IOException {
+		outputClient.writeUTF(msg);
+	}
+	
+	public String read() throws IOException {
+		return inputClient.readUTF();
+	}
 }

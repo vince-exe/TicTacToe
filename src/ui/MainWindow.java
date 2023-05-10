@@ -10,6 +10,9 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
+
+import main.GameManager;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -80,8 +83,14 @@ public class MainWindow {
 					System.out.print("\nNickname: " + NicknameDialog.nickname);
 					IpPortDialog.main(null);
 					
+					/* can't use and && operator, because then there will be 2 error messages */
 					if(IpPortDialog.success) {
-						/** TODO **/
+						if(GameManager.initServer(IpPortDialog.ip, IpPortDialog.port, NicknameDialog.nickname)) {
+							ServerGame.main(null);
+						}
+						else {
+							utils.AlertClass.showErrBox(null, "Hosting", "Failed to host the game.");
+						}
 					}
 				}
 			}
@@ -116,6 +125,16 @@ public class MainWindow {
 					MainWindow.isHosting = false;
 					System.out.print("\nNickname: " + NicknameDialog.nickname);
 					IpPortDialog.main(null);
+					
+					/* can't use and && operator, because then there will be 2 error messages */
+					if(IpPortDialog.success) {
+						if(GameManager.initClient(IpPortDialog.ip, IpPortDialog.port, NicknameDialog.nickname)) {
+							ClientGame.main(null);
+						}
+						else {
+							utils.AlertClass.showErrBox(null, "Connection Error", "Failed to join the game.");
+						}
+					}
 				}
 			}
 		});

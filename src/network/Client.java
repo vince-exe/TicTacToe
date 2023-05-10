@@ -1,18 +1,13 @@
 package network;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class Client {
 	private Socket socket;
-	
-	// take the data from the System.in
-	private BufferedReader inputKeyBoard;
 	
 	// take the data from the server
 	private DataInputStream inputServer;
@@ -31,25 +26,25 @@ public class Client {
 	}
 	
 	public void shutdown() throws IOException {
-		inputKeyBoard.close();
 		outputServer.close();
 		inputServer.close();
 		socket.close();	
 	}
 	
-	public void close() throws IOException {
-		inputKeyBoard.close();
-		outputServer.close();
-		socket.close();
-	}
-	
 	public void connect(int conn_timeout) throws IOException {
 		socket.connect(new InetSocketAddress(this.address, this.port), conn_timeout);
-		
-		// we 'ready' the input reader 
-		inputKeyBoard = new BufferedReader(new InputStreamReader(System.in));
 
-		// and the output that is connected to the Socket
-		outputServer = new DataOutputStream(socket.getOutputStream()); 
+		// used to read message from the server
+		inputServer = new DataInputStream(socket.getInputStream()); 
+		// used to write messages at the server
+		outputServer = new DataOutputStream(socket.getOutputStream());
+	}
+	
+	public void send(String msg) throws IOException {
+		outputServer.writeUTF(msg);
+	}
+	
+	public String read() throws IOException {
+		return inputServer.readUTF();
 	}
 }

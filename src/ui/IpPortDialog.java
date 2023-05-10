@@ -19,7 +19,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class IpPortDialog extends JDialog {
-
+	private static final long serialVersionUID = 1L;
+	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField ipBox;
 	private JTextField portBox;
@@ -53,7 +54,7 @@ public class IpPortDialog extends JDialog {
 			Client client = new Client(IpPortDialog.ip, IpPortDialog.port);
 			
 			client.connect(15000);
-			client.close();
+			client.shutdown();
 		}
 		catch(Exception e) {
 			return false;
@@ -91,8 +92,8 @@ public class IpPortDialog extends JDialog {
 			client.connect(15000);
 			
 			thread.join();
-			server.close();
-			client.close();
+			server.shutdown();
+			client.shutdown();
 			
 			return IpPortDialog.success;
 		}
@@ -175,6 +176,7 @@ public class IpPortDialog extends JDialog {
 		});
 		doneBtn.setForeground(new Color(235, 235, 235));
 		doneBtn.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+		doneBtn.setText("Test");
 		doneBtn.setFocusPainted(false);
 		doneBtn.setContentAreaFilled(false);
 		doneBtn.setBorder(new LineBorder(new Color(2, 21, 31), 4, true));
