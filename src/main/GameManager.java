@@ -21,37 +21,43 @@ public class GameManager {
 		return nickServer;
 	}
 	
-	public static boolean initServer(String ip, int port, String nickServer_) {
+	public static Server getServer() {
+		return server;
+	}
+	
+	public static Client getClient() {
+		return client;
+	}
+	
+	public static String initServer(String ip, int port, String nickServer_) {
 		try {
 			server = new Server(ip, port);
 			server.accept(TIMEOUT_CONN);
 			
 			nickServer = nickServer_;
 			nickClient = server.read();
-			server.send(nickServer + "\n");
+			server.send(nickServer);
 			
-			return true;
+			return "true";
 		} 
-		catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		catch (Exception e) {
+			return e.getMessage();
 		}
 	}
 	
-	public static boolean initClient(String ip, int port, String nickClient_) {
+	public static String initClient(String ip, int port, String nickClient_) {
 		try {
 			client = new Client(ip, port);
 			client.connect(TIMEOUT_CONN);
-			client.send(nickClient_ + "\n");
+			client.send(nickClient_);
 			
 			nickClient = nickClient_;
 			nickServer = client.read();
 			
-			return true;
+			return "true";
 		} 
 		catch (IOException e) {
-			e.printStackTrace();
-			return false;
+			return e.getMessage();
 		}
 	}
 }

@@ -11,8 +11,6 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 
-import main.GameManager;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -20,6 +18,8 @@ public class MainWindow {
 	private JFrame frmTictactoe;
 	
 	public static boolean isHosting;
+	
+	public static MainWindow windowStat;
 	
 	/**
 	 * Launch the application.
@@ -30,6 +30,8 @@ public class MainWindow {
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();
+					windowStat = window;
+					
 					window.frmTictactoe.setLocationRelativeTo(null);
 					window.frmTictactoe.setVisible(true);
 				} catch (Exception e) {
@@ -38,7 +40,11 @@ public class MainWindow {
 			}
 		});
 	}
-
+	
+	public static void setVisible(boolean b) {
+		windowStat.frmTictactoe.setVisible(b);
+	}
+	
 	/**
 	 * Create the application.
 	 */
@@ -80,17 +86,15 @@ public class MainWindow {
 				
 				if(NicknameDialog.doneBtnClicked) {
 					MainWindow.isHosting = true;
-					System.out.print("\nNickname: " + NicknameDialog.nickname);
 					IpPortDialog.main(null);
 					
 					/* can't use and && operator, because then there will be 2 error messages */
 					if(IpPortDialog.success) {
-						if(GameManager.initServer(IpPortDialog.ip, IpPortDialog.port, NicknameDialog.nickname)) {
-							ServerGame.main(null);
-						}
-						else {
-							utils.AlertClass.showErrBox(null, "Hosting", "Failed to host the game.");
-						}
+						windowStat.frmTictactoe.setVisible(false);
+						ServerGame.main(null);
+					}
+					else {
+						utils.AlertClass.showErrBox(null, "Hosting", "Failed to host the game.");
 					}
 				}
 			}
@@ -123,17 +127,15 @@ public class MainWindow {
 				
 				if(NicknameDialog.doneBtnClicked) {
 					MainWindow.isHosting = false;
-					System.out.print("\nNickname: " + NicknameDialog.nickname);
 					IpPortDialog.main(null);
 					
 					/* can't use and && operator, because then there will be 2 error messages */
 					if(IpPortDialog.success) {
-						if(GameManager.initClient(IpPortDialog.ip, IpPortDialog.port, NicknameDialog.nickname)) {
-							ClientGame.main(null);
-						}
-						else {
-							utils.AlertClass.showErrBox(null, "Connection Error", "Failed to join the game.");
-						}
+						windowStat.frmTictactoe.setVisible(false);
+						ClientGame.main(null);
+					}
+					else {
+						utils.AlertClass.showErrBox(null, "Connection Error", "Failed to join the game.");
 					}
 				}
 			}

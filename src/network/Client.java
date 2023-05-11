@@ -1,10 +1,12 @@
 package network;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class Client {
 	private Socket socket;
@@ -23,25 +25,40 @@ public class Client {
 		this.port = port;
 		
 		this.socket = new Socket();
+		
+		inputServer = null;
+		outputServer = null;
 	}
 	
-	public void shutdown() throws IOException {
-		outputServer.close();
-		inputServer.close();
-		socket.close();	
+	public String shutdown()  {
+		try {
+			if(inputServer != null) {
+				inputServer.close();
+			}
+			if(outputServer != null) {
+				outputServer.close();
+			}
+			if(socket != null) {
+				socket.close();
+			}
+			
+			return "ok";
+		}
+		catch(Exception e) {
+			return e.getMessage();
+		}
 	}
 	
-	public void connect(int conn_timeout) throws IOException {
+	public void connect(int conn_timeout) throws IOException, SocketTimeoutException {
 		socket.connect(new InetSocketAddress(this.address, this.port), conn_timeout);
 
-		// used to read message from the server
-		inputServer = new DataInputStream(socket.getInputStream()); 
-		// used to write messages at the server
-		outputServer = new DataOutputStream(socket.getOutputStream());
+		inputServer = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
+		outputServer = new DataOutputStream(socket.getOutputStream()); 
 	}
 	
 	public void send(String msg) throws IOException {
 		outputServer.writeUTF(msg);
+		outputServer.flush();
 	}
 	
 	public String read() throws IOException {

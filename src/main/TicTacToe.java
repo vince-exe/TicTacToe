@@ -1,6 +1,7 @@
 package main;
 
-import ui.*;
+import ui.MainWindow;
+
 
 public class TicTacToe {
 	public static void main(String[] args) {

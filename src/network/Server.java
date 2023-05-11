@@ -1,11 +1,14 @@
 package network;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class Server {
 	private Socket socket;
@@ -21,31 +24,55 @@ public class Server {
 		InetAddress addr = InetAddress.getByName(ip);
 		
 		server = new ServerSocket(port, 50, addr); 
+		socket = null;
+		
+		inputClient = null; 
+		outputClient = null; 
 	} 
 	
-	public void shutdown() throws IOException {	
-		inputClient.close();
-		outputClient.close();
-		socket.close();
-		server.close();
+	public String shutdown() {	
+		try {
+			if(inputClient != null) {
+				inputClient.close();
+			}
+			if(outputClient != null) {
+				outputClient.close();
+			}
+			if(socket != null) {
+				socket.close();
+			}
+			if(server != null) {
+				server.close();
+			}
+			
+			return "ok";
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
 	}
 	
-	public void accept(int timeout) throws IOException {
+	public void accept(int timeout) throws IOException, SocketTimeoutException {
 		server.setSoTimeout(timeout);
 			
 		socket = server.accept(); 
-			
-		// takes input from the client socket 
-		inputClient = new DataInputStream(socket.getInputStream()); 
-		// send messages to the client socket
+		
+		inputClient = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
 		outputClient = new DataOutputStream(socket.getOutputStream());
 	}	
 	
 	public void send(String msg) throws IOException {
 		outputClient.writeUTF(msg);
+		outputClient.flush();
 	}
 	
 	public String read() throws IOException {
-		return inputClient.readUTF();
+        try {
+            return inputClient.readUTF();
+        } catch (EOFException e) {
+            e.printStackTrace();
+            return null;
+        }
 	}
 }
