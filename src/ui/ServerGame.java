@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import main.GameManager;
+import utils.Colors;
+import utils.GameUtils;
 
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -15,6 +17,9 @@ import java.awt.event.WindowListener;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+import javax.swing.JTextArea;
+import javax.swing.border.LineBorder;
+import javax.swing.JTextField;
 
 public class ServerGame extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -22,12 +27,16 @@ public class ServerGame extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	JLabel waitingLabel;
 	JLabel titleLabel;
-	JLabel youLabelTurn;
 	JLabel lblNewLabel_1;
-	JLabel clientLabelTurn;
 	JLabel nickClientLabel;
+	JLabel row1;
+	JLabel row2;
+	JLabel row3;
+	JLabel row4;
+	JTextArea chatBox;
 	
 	private static Thread threadServer;
+	private JTextField msgBox;
 	
 	/**
 	 * Launch the application.
@@ -109,9 +118,14 @@ public class ServerGame extends JDialog {
 		waitingLabel.setVisible(!b);
 		
 		titleLabel.setVisible(b);
-		youLabelTurn.setVisible(b);
 		lblNewLabel_1.setVisible(b);
-		clientLabelTurn.setVisible(b);
+		row1.setVisible(b);
+		row2.setVisible(b);
+		row3.setVisible(b);
+		row4.setVisible(b);
+		chatBox.setVisible(b);
+		msgBox.setVisible(b);
+		
 		nickClientLabel.setVisible(b);
 		nickClientLabel.setText(GameManager.getNickClient());
 	}
@@ -136,35 +150,63 @@ public class ServerGame extends JDialog {
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		titleLabel.setForeground(new Color(235, 235, 235));
 		titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 38));
-		titleLabel.setBounds(141, 21, 274, 61);
+		titleLabel.setBounds(141, 21, 245, 61);
 		contentPanel.add(titleLabel);
-		
-		youLabelTurn = new JLabel("");
-		youLabelTurn.setBounds(34, 105, 37, 35);
-		youLabelTurn.setBackground(utils.Colors.green);
-		contentPanel.add(youLabelTurn);
 		
 		lblNewLabel_1 = new JLabel("You");
 		lblNewLabel_1.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
 		lblNewLabel_1.setForeground(new Color(235, 235, 235));
 		lblNewLabel_1.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_1.setBounds(101, 103, 58, 39);
+		lblNewLabel_1.setBounds(44, 37, 58, 39);
 		contentPanel.add(lblNewLabel_1);
-		
-		clientLabelTurn = new JLabel("");
-		clientLabelTurn.setBackground(new Color(2, 125, 15));
-		clientLabelTurn.setBounds(490, 105, 37, 35);
-		clientLabelTurn.setBackground(utils.Colors.red);
-		contentPanel.add(clientLabelTurn);
 		
 		nickClientLabel = new JLabel(GameManager.getNickClient());
 		nickClientLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-		nickClientLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		nickClientLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		nickClientLabel.setForeground(new Color(235, 235, 235));
 		nickClientLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
-		nickClientLabel.setBounds(328, 103, 135, 39);
+		nickClientLabel.setBounds(416, 37, 127, 39);
 		contentPanel.add(nickClientLabel);
+		
+		row1 = new JLabel("");
+		row1.setOpaque(true);
+		row1.setBackground(new Color(235, 235, 235));
+		row1.setBounds(114, 124, 5, 180);
+		contentPanel.add(row1);
+		
+		row2 = new JLabel("");
+		row2.setOpaque(true);
+		row2.setBackground(new Color(235, 235, 235));
+		row2.setBounds(189, 124, 5, 180);
+		contentPanel.add(row2);
+		
+		row3 = new JLabel("");
+		row3.setOpaque(true);
+		row3.setBackground(new Color(235, 235, 235));
+		row3.setBounds(46, 184, 215, 5);
+		contentPanel.add(row3);
+		
+		row4 = new JLabel("");
+		row4.setOpaque(true);
+		row4.setBackground(new Color(235, 235, 235));
+		row4.setBounds(44, 242, 215, 5);
+		contentPanel.add(row4);
+		
+		chatBox = new JTextArea();
+		chatBox.setBorder(new LineBorder(new Color(10, 34, 46), 3, true));
+		chatBox.setBackground(new Color(15, 55, 77));
+		chatBox.setBounds(308, 124, 235, 174);
+		contentPanel.add(chatBox);
+		
+		msgBox = new JTextField();
+		msgBox.setCaretColor(new Color(218, 218, 218));
+		msgBox.setHorizontalAlignment(SwingConstants.CENTER);
+		msgBox.setBorder(new LineBorder(new Color(15, 34, 46), 3, true));
+		msgBox.setBackground(new Color(15, 55, 77));
+		msgBox.setBounds(337, 309, 181, 35);
+		contentPanel.add(msgBox);
+		msgBox.setColumns(10);
 		
 		waitingLabel = new JLabel("Waiting for a connection..");
 		waitingLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
@@ -182,7 +224,7 @@ public class ServerGame extends JDialog {
 					return;
 				}
 				makeThingsVisible(true);
-				System.out.print("\nNick Client: " + GameManager.getNickClient());
+				GameUtils.setTurnsColors(lblNewLabel_1, nickClientLabel, Colors.green, Colors.whiteSmoke);
 			}
 		};
 		threadServer.start();
