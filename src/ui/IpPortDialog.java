@@ -1,6 +1,5 @@
 package ui;
 
-import network.*;
 import java.awt.BorderLayout;
 
 import javax.swing.JButton;
@@ -16,7 +15,6 @@ import javax.swing.JLabel;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 public class IpPortDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -60,7 +58,7 @@ public class IpPortDialog extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
-		ipBox = new JTextField("Ip Address", 20);
+		ipBox = new JTextField("127.0.0.1", 20);
 		ipBox.setHorizontalAlignment(SwingConstants.CENTER);
 		ipBox.setForeground(new Color(235, 235, 235));
 		ipBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
@@ -70,7 +68,7 @@ public class IpPortDialog extends JDialog {
 		ipBox.setBounds(40, 73, 208, 50);
 		contentPanel.add(ipBox);
 		
-		portBox = new JTextField("Port", 20);
+		portBox = new JTextField("9999", 20);
 		portBox.setHorizontalAlignment(SwingConstants.CENTER);
 		portBox.setForeground(new Color(235, 235, 235));
 		portBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 18));
