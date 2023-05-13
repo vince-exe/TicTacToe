@@ -49,6 +49,7 @@ public class IpPortDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public IpPortDialog() {
+		setResizable(false);
 		setTitle("Network");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(IpPortDialog.class.getResource("/ui/resources/icon.png")));
 		setBounds(100, 100, 308, 343);

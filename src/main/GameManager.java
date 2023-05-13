@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
 import network.*;
 
@@ -12,6 +13,17 @@ public class GameManager {
 	
 	private static String nickClient;
 	private static String nickServer;
+	
+	private static String clientShape;
+	private static String serverShape;
+	
+	public static String getClientShape() {
+		return clientShape;
+	}
+	
+	public static String getServerShape() {
+		return serverShape;
+	}
 	
 	public static String getNickClient() {
 		return nickClient;
@@ -58,6 +70,17 @@ public class GameManager {
 		} 
 		catch (IOException e) {
 			return e.getMessage();
+		}
+	}
+	
+	public static void initShapes() {
+		if((ThreadLocalRandom.current().nextInt(0, 1 + 1)) == 1) {
+			serverShape = "X";
+			clientShape = "O";
+		}
+		else {
+			serverShape = "O";
+			clientShape = "X";
 		}
 	}
 }
