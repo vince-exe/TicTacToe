@@ -1,0 +1,15 @@
+**PRIORITA**
+trasferire codice da ClientGame a ClientGame2 identico.
+rimuovere il metodo InitShapes da GameManager e metterlo in ServerGame perché:
+-Il server inizializza le shapes e setta la sua nel GameManager, e manda quella del client al client.
+-Il client riceve la sua shape e la setta nel GameManager.
+
+
+**ORDINE IMPLEMENTAZIONE**
+-vittoria ( quindi game funzionante )
+-uscita di finestra ( mentre si gioca, si esce dalla finestra )
+-fine tempo ( quando si finisce il tempo )
+
+**ORDINE IMPLEMENTAZIONE**
+-rivincita ( ad ogni vittoria appare un pulsante per la rivincita ), viene cambiato l'ordine di gioco e le forme vengono invertite ( facoltativo ).
+-chat, la chat per parlare

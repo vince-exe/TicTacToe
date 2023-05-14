@@ -17,6 +17,10 @@ public class GameManager {
 	private static String clientShape;
 	private static String serverShape;
 	
+	public static void setClientShape(String s) {
+		clientShape = s;
+	}
+	
 	public static String getClientShape() {
 		return clientShape;
 	}

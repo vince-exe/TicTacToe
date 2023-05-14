@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import main.GameManager;
+import utils.AlertClass;
 import utils.Colors;
 import utils.GameUtils;
 
@@ -13,6 +14,7 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -42,6 +44,7 @@ public class ServerGame extends JDialog {
 	private JTextField msgBox;
 	
 	private static ServerGame dialog;
+	private JLabel playLabel0;
 	
 	/**
 	 * Launch the application.
@@ -214,19 +217,19 @@ public class ServerGame extends JDialog {
 		contentPanel.add(msgBox);
 		msgBox.setColumns(10);
 		
-		JLabel playLabel0_0 = new JLabel("");
-		playLabel0_0.setHorizontalAlignment(SwingConstants.CENTER);
-		playLabel0_0.setHorizontalTextPosition(SwingConstants.CENTER);
-		playLabel0_0.setForeground(new Color(235, 235, 235));
-		playLabel0_0.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
-		playLabel0_0.addMouseListener(new MouseAdapter() {
+		playLabel0 = new JLabel("");
+		playLabel0.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel0.setHorizontalTextPosition(SwingConstants.CENTER);
+		playLabel0.setForeground(new Color(235, 235, 235));
+		playLabel0.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel0_0.getText().isEmpty()) {
+				if(!playLabel0.getText().isEmpty()) {
 					return;
 				}
 				
-				playLabel0_0.setText(GameManager.getServerShape());
+				playLabel0.setText(GameManager.getServerShape());
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -239,8 +242,8 @@ public class ServerGame extends JDialog {
 	            dialog.setVisible(true);
 			}
 		});
-		playLabel0_0.setBounds(47, 126, 60, 52);
-		contentPanel.add(playLabel0_0);
+		playLabel0.setBounds(47, 126, 60, 52);
+		contentPanel.add(playLabel0);
 		
 		JLabel playLabel0_1 = new JLabel("");
 		playLabel0_1.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
@@ -481,9 +484,19 @@ public class ServerGame extends JDialog {
 					failedHandleConnection();
 					return;
 				}
-				makeThingsVisible(true);
 				/* asssign the X or O to the players ( random ) */
 				GameManager.initShapes();
+				
+				try {
+					/* send the shape to the client */
+					GameManager.getServer().send(GameManager.getClientShape());
+				} catch (IOException e) {
+					AlertClass.showErrBox(null, "Connection Error", e.getMessage());
+					failedHandleConnection();
+					return;
+				}
+				
+				makeThingsVisible(true);
 				GameUtils.setTurnsColors(lblNewLabel_1, nickClientLabel, Colors.green, Colors.whiteSmoke);
 			}
 		};
