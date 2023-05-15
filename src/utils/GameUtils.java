@@ -10,8 +10,10 @@ public class GameUtils {
 	public final static Cursor CROSSHAIR_CURSOR = new Cursor(Cursor.CROSSHAIR_CURSOR);
 	public final static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 	
+	public final static int MAX_LEN_MESSAGE_BOX = 30;
+	
 	public static void setTurnsColors(JLabel l1, JLabel l2, Color youC, Color clientC) {
 		l1.setForeground(youC);
-		l2.setBackground(clientC);
+		l2.setForeground(clientC);
 	}
 }

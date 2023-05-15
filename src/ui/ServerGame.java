@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -19,11 +20,14 @@ import java.io.IOException;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class ServerGame extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -209,11 +213,29 @@ public class ServerGame extends JDialog {
 		contentPanel.add(chatBox);
 		
 		msgBox = new JTextField();
-		msgBox.setCaretColor(new Color(218, 218, 218));
+		msgBox.setText("Send a message");
+		msgBox.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(msgBox.getText().equalsIgnoreCase("Send a message")) {
+					msgBox.setText("");
+				}
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(msgBox.getText().trim().isEmpty()) {
+					msgBox.setText("Send a message");
+				}
+			}
+		});
 		msgBox.setHorizontalAlignment(SwingConstants.CENTER);
+		msgBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		msgBox.setForeground(new Color(221, 221, 221));
+		msgBox.setText("Send a message");
+		msgBox.setCaretColor(new Color(218, 218, 218));
 		msgBox.setBorder(new LineBorder(new Color(15, 34, 46), 3, true));
 		msgBox.setBackground(new Color(15, 55, 77));
-		msgBox.setBounds(337, 309, 181, 35);
+		msgBox.setBounds(318, 309, 215, 35);
 		contentPanel.add(msgBox);
 		msgBox.setColumns(10);
 		

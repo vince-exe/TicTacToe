@@ -1,27 +1,31 @@
 package ui;
 
 import java.awt.BorderLayout;
+
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import main.GameManager;
 import utils.AlertClass;
 import utils.Colors;
 import utils.GameUtils;
 
-import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.awt.Color;
+import java.awt.Font;
 
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Font;
 import javax.swing.JTextArea;
-import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
+
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -29,21 +33,28 @@ public class ClientGame extends JDialog {
 	private static final long serialVersionUID = 1L;
 	
 	private final JPanel contentPanel = new JPanel();
-	private JLabel waitingLabel;
+	
+	private static Thread threadClient;
+	
+	private JTextField msgBox;
 	private JLabel titleLabel;
 	private JLabel lblNewLabel_1;
 	private JLabel nickServerLabel;
-	private JLabel row1;
-	private JLabel row2;
-	private JLabel row3;
-	private JLabel row4;
-	private JLabel timeLabel;
 	private JTextArea chatBox;
-	
-	private static Thread threadClient;
-	private JTextField msgBox;
+	private JLabel timeLabel;
+	private JLabel row1, row2, row3, row4;
+	private JLabel waitingLabel;
+	private JLabel playLabel_0_0;
 	
 	private static ClientGame dialog;
+	private JLabel playLabel_1_0;
+	private JLabel playLabel_2_0;
+	private JLabel playLabel_2_1;
+	private JLabel playLabel_2_2;
+	private JLabel playLabel_1_2;
+	private JLabel playLabel_1_1;
+	private JLabel playLabel_0_1;
+	private JLabel playLabel_0_2;
 	
 	/**
 	 * Launch the application.
@@ -51,11 +62,10 @@ public class ClientGame extends JDialog {
 	public static void main(String[] args) {
 		try {
 			dialog = new ClientGame();
-			
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setModalityType(DEFAULT_MODALITY_TYPE);
 			dialog.setVisible(true);
-					
+			
 			dialog.addWindowListener(new WindowListener() {
 				@Override
 				public void windowOpened(WindowEvent e) {
@@ -98,12 +108,12 @@ public class ClientGame extends JDialog {
 					
 				}
 			});
-			
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private boolean handleConnection() {
 		String err = GameManager.initClient(IpPortDialog.ip, IpPortDialog.port, NicknameDialog.nickname);
 		if(!err.equals("true")) {
@@ -142,11 +152,11 @@ public class ClientGame extends JDialog {
 	 * Create the dialog.
 	 */
 	public ClientGame() {
-		setTitle("TicTacToe  [client]");
 		setResizable(false);
-		setAutoRequestFocus(false);
+		setTitle("TicTacToe  [client]");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ClientGame.class.getResource("/ui/resources/icon.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setAutoRequestFocus(false);
 		setBounds(100, 100, 580, 403);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(15, 49, 66));
@@ -169,13 +179,53 @@ public class ClientGame extends JDialog {
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
 		contentPanel.add(lblNewLabel_1);
 		
-		nickServerLabel = new JLabel(GameManager.getNickClient());
+		nickServerLabel = new JLabel(GameManager.getNickServer());
 		nickServerLabel.setBounds(416, 37, 127, 39);
 		nickServerLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		nickServerLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		nickServerLabel.setForeground(new Color(235, 235, 235));
 		nickServerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
 		contentPanel.add(nickServerLabel);
+		
+		chatBox = new JTextArea();
+		chatBox.setBounds(308, 124, 235, 174);
+		chatBox.setBorder(new LineBorder(new Color(10, 34, 46), 3, true));
+		chatBox.setBackground(new Color(15, 55, 77));
+		contentPanel.add(chatBox);
+		
+		msgBox = new JTextField();
+		msgBox.setText("Send a message");
+		msgBox.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(msgBox.getText().equalsIgnoreCase("Send a message")) {
+					msgBox.setText("");
+				}
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(msgBox.getText().trim().isEmpty()) {
+					msgBox.setText("Send a message");
+				}
+			}
+		});
+		msgBox.setHorizontalAlignment(SwingConstants.CENTER);
+		msgBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		msgBox.setForeground(new Color(221, 221, 221));
+		msgBox.setText("Send a message");
+		msgBox.setCaretColor(new Color(218, 218, 218));
+		msgBox.setBorder(new LineBorder(new Color(15, 34, 46), 3, true));
+		msgBox.setBackground(new Color(15, 55, 77));
+		msgBox.setBounds(318, 309, 215, 35);
+		contentPanel.add(msgBox);
+		msgBox.setColumns(10);
+		
+		timeLabel = new JLabel("2:00");
+		timeLabel.setBounds(21, 314, 58, 39);
+		timeLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 21));
+		timeLabel.setForeground(new Color(235, 235, 235));
+		timeLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		contentPanel.add(timeLabel);
 		
 		row1 = new JLabel("");
 		row1.setBounds(114, 124, 5, 180);
@@ -201,28 +251,6 @@ public class ClientGame extends JDialog {
 		row4.setBackground(new Color(235, 235, 235));
 		contentPanel.add(row4);
 		
-		chatBox = new JTextArea();
-		chatBox.setBounds(308, 124, 235, 174);
-		chatBox.setBorder(new LineBorder(new Color(10, 34, 46), 3, true));
-		chatBox.setBackground(new Color(15, 55, 77));
-		contentPanel.add(chatBox);
-		
-		msgBox = new JTextField();
-		msgBox.setBounds(337, 309, 181, 35);
-		msgBox.setCaretColor(new Color(218, 218, 218));
-		msgBox.setHorizontalAlignment(SwingConstants.CENTER);
-		msgBox.setBorder(new LineBorder(new Color(15, 34, 46), 3, true));
-		msgBox.setBackground(new Color(15, 55, 77));
-		contentPanel.add(msgBox);
-		msgBox.setColumns(10);
-	
-		timeLabel = new JLabel("2:00");
-		timeLabel.setBounds(21, 314, 58, 39);
-		timeLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 21));
-		timeLabel.setForeground(new Color(235, 235, 235));
-		timeLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		contentPanel.add(timeLabel);
-		
 		waitingLabel = new JLabel("Waiting for a connection..");
 		waitingLabel.setBounds(111, 145, 348, 58);
 		waitingLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 25));
@@ -230,12 +258,14 @@ public class ClientGame extends JDialog {
 		waitingLabel.setForeground(new Color(233, 233, 233));
 		contentPanel.add(waitingLabel);
 		
-		JLabel CPlayLabel0_0 = new JLabel("");
-		CPlayLabel0_0.setBounds(47, 126, 60, 52);
-		CPlayLabel0_0.addMouseListener(new MouseAdapter() {
+		playLabel_0_0 = new JLabel("");
+		playLabel_0_0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				if(!playLabel_0_0.getText().isEmpty()) {
+					return;
+				}
+				playLabel_0_0.setText(GameManager.getClientShape());
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -248,11 +278,219 @@ public class ClientGame extends JDialog {
 	            dialog.setVisible(true);
 			}
 		});
-		CPlayLabel0_0.setHorizontalTextPosition(SwingConstants.CENTER);
-		CPlayLabel0_0.setHorizontalAlignment(SwingConstants.CENTER);
-		CPlayLabel0_0.setForeground(new Color(235, 235, 235));
-		CPlayLabel0_0.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
-		contentPanel.add(CPlayLabel0_0);
+		playLabel_0_0.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_0_0.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_0_0.setForeground(new Color(235, 235, 235));
+		playLabel_0_0.setBounds(49, 129, 58, 49);
+		contentPanel.add(playLabel_0_0);
+		
+		playLabel_1_0 = new JLabel("");
+		playLabel_1_0.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!playLabel_1_0.getText().isEmpty()) {
+					return;
+				}
+				playLabel_1_0.setText(GameManager.getClientShape());
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+	            dialog.setCursor(GameUtils.CROSSHAIR_CURSOR);
+	            dialog.setVisible(true);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+	            dialog.setCursor(GameUtils.DEFAULT_CURSOR);
+	            dialog.setVisible(true);
+			}
+		});
+		playLabel_1_0.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_1_0.setForeground(new Color(235, 235, 235));
+		playLabel_1_0.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_1_0.setBounds(50, 194, 58, 43);
+		contentPanel.add(playLabel_1_0);
+		
+		playLabel_2_0 = new JLabel("");
+		playLabel_2_0.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!playLabel_2_0.getText().isEmpty()) {
+					return;
+				}
+				playLabel_2_0.setText(GameManager.getClientShape());
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+	            dialog.setCursor(GameUtils.CROSSHAIR_CURSOR);
+	            dialog.setVisible(true);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+	            dialog.setCursor(GameUtils.DEFAULT_CURSOR);
+	            dialog.setVisible(true);
+			}
+		});
+		playLabel_2_0.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_2_0.setForeground(new Color(235, 235, 235));
+		playLabel_2_0.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_2_0.setBounds(50, 254, 58, 45);
+		contentPanel.add(playLabel_2_0);
+		
+		playLabel_2_1 = new JLabel("");
+		playLabel_2_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!playLabel_2_1.getText().isEmpty()) {
+					return;
+				}
+				playLabel_2_1.setText(GameManager.getClientShape());
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+	            dialog.setCursor(GameUtils.CROSSHAIR_CURSOR);
+	            dialog.setVisible(true);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+	            dialog.setCursor(GameUtils.DEFAULT_CURSOR);
+	            dialog.setVisible(true);
+			}
+		});
+		playLabel_2_1.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_2_1.setForeground(new Color(235, 235, 235));
+		playLabel_2_1.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_2_1.setBounds(125, 253, 58, 47);
+		contentPanel.add(playLabel_2_1);
+		
+		playLabel_2_2 = new JLabel("");
+		playLabel_2_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!playLabel_2_2.getText().isEmpty()) {
+					return;
+				}
+				playLabel_2_2.setText(GameManager.getClientShape());
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+	            dialog.setCursor(GameUtils.CROSSHAIR_CURSOR);
+	            dialog.setVisible(true);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+	            dialog.setCursor(GameUtils.DEFAULT_CURSOR);
+	            dialog.setVisible(true);
+			}
+		});
+		playLabel_2_2.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_2_2.setForeground(new Color(235, 235, 235));
+		playLabel_2_2.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_2_2.setBounds(200, 251, 55, 49);
+		contentPanel.add(playLabel_2_2);
+		
+		playLabel_1_2 = new JLabel("");
+		playLabel_1_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!playLabel_1_2.getText().isEmpty()) {
+					return;
+				}
+				playLabel_1_2.setText(GameManager.getClientShape());
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+	            dialog.setCursor(GameUtils.CROSSHAIR_CURSOR);
+	            dialog.setVisible(true);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+	            dialog.setCursor(GameUtils.DEFAULT_CURSOR);
+	            dialog.setVisible(true);
+			}
+		});
+		playLabel_1_2.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_1_2.setForeground(new Color(235, 235, 235));
+		playLabel_1_2.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_1_2.setBounds(200, 196, 58, 43);
+		contentPanel.add(playLabel_1_2);
+		
+		playLabel_1_1 = new JLabel("");
+		playLabel_1_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!playLabel_1_1.getText().isEmpty()) {
+					return;
+				}
+				playLabel_1_1.setText(GameManager.getClientShape());
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+	            dialog.setCursor(GameUtils.CROSSHAIR_CURSOR);
+	            dialog.setVisible(true);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+	            dialog.setCursor(GameUtils.DEFAULT_CURSOR);
+	            dialog.setVisible(true);
+			}
+		});
+		playLabel_1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_1_1.setForeground(new Color(235, 235, 235));
+		playLabel_1_1.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_1_1.setBounds(125, 196, 58, 41);
+		contentPanel.add(playLabel_1_1);
+		
+		playLabel_0_1 = new JLabel("");
+		playLabel_0_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!playLabel_0_1.getText().isEmpty()) {
+					return;
+				}
+				playLabel_0_1.setText(GameManager.getClientShape());
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+	            dialog.setCursor(GameUtils.CROSSHAIR_CURSOR);
+	            dialog.setVisible(true);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+	            dialog.setCursor(GameUtils.DEFAULT_CURSOR);
+	            dialog.setVisible(true);
+			}
+		});
+		playLabel_0_1.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_0_1.setForeground(new Color(235, 235, 235));
+		playLabel_0_1.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_0_1.setBounds(124, 132, 59, 46);
+		contentPanel.add(playLabel_0_1);
+		
+		playLabel_0_2 = new JLabel("");
+		playLabel_0_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!playLabel_0_2.getText().isEmpty()) {
+					return;
+				}
+				playLabel_0_2.setText(GameManager.getClientShape());
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+	            dialog.setCursor(GameUtils.CROSSHAIR_CURSOR);
+	            dialog.setVisible(true);
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+	            dialog.setCursor(GameUtils.DEFAULT_CURSOR);
+	            dialog.setVisible(true);
+			}
+		});
+		playLabel_0_2.setHorizontalAlignment(SwingConstants.CENTER);
+		playLabel_0_2.setForeground(new Color(235, 235, 235));
+		playLabel_0_2.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
+		playLabel_0_2.setBounds(200, 134, 57, 46);
+		contentPanel.add(playLabel_0_2);
 		
 		/* Hide all the components */
 		makeThingsVisible(false);
@@ -271,7 +509,6 @@ public class ClientGame extends JDialog {
 					failedHandleConnection();
 					return;
 				}
-				System.out.print("\nClient Shape: " + GameManager.getClientShape());
 				makeThingsVisible(true);
 				GameUtils.setTurnsColors(lblNewLabel_1, nickServerLabel, Colors.whiteSmoke, Colors.green);
 			}

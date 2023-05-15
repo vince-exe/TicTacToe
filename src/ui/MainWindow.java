@@ -132,7 +132,7 @@ public class MainWindow {
 					/* can't use and && operator, because then there will be 2 error messages */
 					if(IpPortDialog.success) {
 						windowStat.frmTictactoe.setVisible(false);
-						ClientGame2.main(null);
+						ClientGame.main(null);
 					}
 					else {
 						utils.AlertClass.showErrBox(null, "Connection Error", "Failed to join the game.");
