@@ -520,6 +520,34 @@ public class ServerGame extends JDialog {
 				
 				makeThingsVisible(true);
 				GameUtils.setTurnsColors(lblNewLabel_1, nickClientLabel, Colors.green, Colors.whiteSmoke);
+				
+				Byte bMsg;
+				String msg;
+				
+				while(true) {
+					try {
+						bMsg = GameManager.getServer().readByte();
+						msg = GameManager.getServer().read();
+						
+						switch(bMsg) {
+						case GameUtils.NORMAL_MESSAGE:
+							System.out.print("\nMessaggio Normal: " + msg);
+							break;
+							
+						case GameUtils.GAME_MESSAGE:
+							System.out.print("\nMessaggio Del Game: " + msg);
+							break;
+							
+						default:
+							break;
+						}
+					} 
+					catch (IOException e) {
+						AlertClass.showErrBox(null, "Connection Error", "An error occured while trying to read a message. Pleasy retry");
+						dispose();
+						return;
+					}
+				}
 			}
 		};
 		threadServer.start();

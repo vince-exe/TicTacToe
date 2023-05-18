@@ -26,8 +26,12 @@ import javax.swing.JTextField;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 
 public class ClientGame extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -194,6 +198,21 @@ public class ClientGame extends JDialog {
 		contentPanel.add(chatBox);
 		
 		msgBox = new JTextField();
+		/* send a message */
+		msgBox.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					try {
+						GameManager.getClient().sendByte(GameUtils.NORMAL_MESSAGE);
+						GameManager.getClient().send(msgBox.getText());
+					} 
+					catch (IOException e1) {
+						AlertClass.showErrBox(null, "Connection Error", "An error occured while trying to send a message. Pleasy retry");
+					}
+				}	
+			}
+		});
 		msgBox.setText("Send a message");
 		msgBox.addFocusListener(new FocusAdapter() {
 			@Override

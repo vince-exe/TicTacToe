@@ -3,7 +3,6 @@ package network;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -67,12 +66,16 @@ public class Server {
 		outputClient.flush();
 	}
 	
+	public void sendByte(Byte b) throws IOException {
+		outputClient.writeByte(b);
+		outputClient.flush();
+	}
+	
+	public Byte readByte() throws IOException {
+		return inputClient.readByte();
+	}
+	
 	public String read() throws IOException {
-        try {
-            return inputClient.readUTF();
-        } catch (EOFException e) {
-            e.printStackTrace();
-            return null;
-        }
+		return inputClient.readUTF();
 	}
 }

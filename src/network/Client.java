@@ -61,6 +61,15 @@ public class Client {
 		outputServer.flush();
 	}
 	
+	public void sendByte(Byte b) throws IOException {
+		outputServer.writeByte(b);
+		outputServer.flush();
+	}
+	
+	public Byte readByte() throws IOException {
+		return inputServer.readByte();
+	}
+	
 	public String read() throws IOException {
 		return inputServer.readUTF();
 	}
