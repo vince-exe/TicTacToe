@@ -10,7 +10,7 @@ public class GameUtils {
 	public final static Cursor CROSSHAIR_CURSOR = new Cursor(Cursor.CROSSHAIR_CURSOR);
 	public final static Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 	
-	public final static int MAX_LEN_MESSAGE_BOX = 30;
+	public final static int MAX_LEN_MESSAGE_BOX = 35;
 	
 	public final static byte NORMAL_MESSAGE = 0;
 	public final static byte GAME_MESSAGE = 1;

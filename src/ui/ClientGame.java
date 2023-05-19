@@ -29,9 +29,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
+import javax.swing.JScrollPane;
 
 public class ClientGame extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -59,6 +58,7 @@ public class ClientGame extends JDialog {
 	private JLabel playLabel_1_1;
 	private JLabel playLabel_0_1;
 	private JLabel playLabel_0_2;
+	private JScrollPane jPaneChat;
 	
 	/**
 	 * Launch the application.
@@ -144,9 +144,9 @@ public class ClientGame extends JDialog {
 		row2.setVisible(b);
 		row3.setVisible(b);
 		row4.setVisible(b);
-		chatBox.setVisible(b);
 		msgBox.setVisible(b);
 		timeLabel.setVisible(b);
+		jPaneChat.setVisible(b);
 		
 		nickServerLabel.setVisible(b);
 		nickServerLabel.setText(GameManager.getNickServer());
@@ -191,26 +191,50 @@ public class ClientGame extends JDialog {
 		nickServerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
 		contentPanel.add(nickServerLabel);
 		
-		chatBox = new JTextArea();
+		chatBox = new JTextArea(" [Server]: Good luck and have fun!!\n");
+		chatBox.setWrapStyleWord(true);
+		chatBox.setLineWrap(true);
+		chatBox.setForeground(new Color(190, 190, 190));
+		chatBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 13));
+		chatBox.setEditable(false);
 		chatBox.setBounds(308, 124, 235, 174);
 		chatBox.setBorder(new LineBorder(new Color(10, 34, 46), 3, true));
 		chatBox.setBackground(new Color(15, 55, 77));
-		contentPanel.add(chatBox);
+		
+		jPaneChat = new JScrollPane(chatBox);
+		jPaneChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		jPaneChat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		jPaneChat.setBorder(null);
+		jPaneChat.setBounds(308, 124, 245, 174);
+		contentPanel.add(jPaneChat);
+
 		
 		msgBox = new JTextField();
 		/* send a message */
 		msgBox.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER && msgBox.getText().length() < GameUtils.MAX_LEN_MESSAGE_BOX) {
 					try {
+						if(msgBox.getText().length() == 0) {
+							return;
+						}
+						
 						GameManager.getClient().sendByte(GameUtils.NORMAL_MESSAGE);
 						GameManager.getClient().send(msgBox.getText());
+						chatBox.append(" [You]: " + msgBox.getText() + "\n");
+						msgBox.setText("");
 					} 
 					catch (IOException e1) {
 						AlertClass.showErrBox(null, "Connection Error", "An error occured while trying to send a message. Pleasy retry");
 					}
-				}	
+				}
+				if(msgBox.getText().length() > GameUtils.MAX_LEN_MESSAGE_BOX) {
+					msgBox.setForeground(Colors.red);
+				}
+				else {
+					msgBox.setForeground(Colors.chatBoxColor);
+				}
 			}
 		});
 		msgBox.setText("Send a message");
@@ -235,7 +259,7 @@ public class ClientGame extends JDialog {
 		msgBox.setCaretColor(new Color(218, 218, 218));
 		msgBox.setBorder(new LineBorder(new Color(15, 34, 46), 3, true));
 		msgBox.setBackground(new Color(15, 55, 77));
-		msgBox.setBounds(318, 309, 215, 35);
+		msgBox.setBounds(324, 309, 215, 35);
 		contentPanel.add(msgBox);
 		msgBox.setColumns(10);
 		

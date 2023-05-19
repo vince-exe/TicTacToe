@@ -9,3 +9,6 @@
 **ORDINE IMPLEMENTAZIONE**
 -rivincita ( ad ogni vittoria appare un pulsante per la rivincita ), viene cambiato l'ordine di gioco e le forme vengono invertite ( facoltativo ).
 -chat, la chat per parlare
+
+**LAVORANDO A**
+-chat
