@@ -73,4 +73,8 @@ public class Client {
 	public String read() throws IOException {
 		return inputServer.readUTF();
 	}
+	
+	public boolean isClosed() {
+		return this.socket.isClosed();
+	}
 }

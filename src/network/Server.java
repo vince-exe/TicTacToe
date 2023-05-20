@@ -54,7 +54,7 @@ public class Server {
 	
 	public void accept(int timeout) throws IOException, SocketTimeoutException {
 		server.setSoTimeout(timeout);
-			
+		
 		socket = server.accept(); 
 		
 		inputClient = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
@@ -77,5 +77,9 @@ public class Server {
 	
 	public String read() throws IOException {
 		return inputClient.readUTF();
+	}
+	
+	public boolean isClosed() {
+		return this.socket.isClosed();
 	}
 }

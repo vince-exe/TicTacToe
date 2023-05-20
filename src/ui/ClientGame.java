@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.text.DefaultCaret;
 
 import main.GameManager;
 import utils.AlertClass;
@@ -60,11 +61,17 @@ public class ClientGame extends JDialog {
 	private JLabel playLabel_0_2;
 	private JScrollPane jPaneChat;
 	
+	private static boolean windowClosed;
+	private static boolean handleConnErr;
+	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
+			windowClosed = false;
+			handleConnErr = false;
+			
 			dialog = new ClientGame();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setModalityType(DEFAULT_MODALITY_TYPE);
@@ -79,13 +86,21 @@ public class ClientGame extends JDialog {
 
 				@Override
 				public void windowClosing(WindowEvent e) {
-
+					
 				}
 
 				@Override
 				public void windowClosed(WindowEvent e) {
-					GameManager.getClient().shutdown();
-					MainWindow.setVisible(true);
+					if(!GameManager.getClient().isClosed() && !handleConnErr) {
+						try {
+							windowClosed = true;
+							GameManager.getClient().sendByte(GameUtils.EXIT_MESSAGE);
+							dialog.closeSocketAndWindow();
+						} 
+						catch (IOException e1) {
+							dialog.closeSocketAndWindow();
+						}
+					}
 				}
 
 				@Override
@@ -122,13 +137,15 @@ public class ClientGame extends JDialog {
 		String err = GameManager.initClient(IpPortDialog.ip, IpPortDialog.port, NicknameDialog.nickname);
 		if(!err.equals("true")) {
 			utils.AlertClass.showErrBox(null, "Connection Error", err);
+			handleConnErr = true;
+			
 			return false;
 		}
 
 		return true;
 	}
 	
-	public void failedHandleConnection() {
+	public void closeSocketAndWindow() {
 		GameManager.getClient().shutdown();
 		dispose();
 		MainWindow.setVisible(true);
@@ -191,8 +208,7 @@ public class ClientGame extends JDialog {
 		nickServerLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
 		contentPanel.add(nickServerLabel);
 		
-		chatBox = new JTextArea(" [Server]: Good luck and have fun!!\n");
-		chatBox.setWrapStyleWord(true);
+		chatBox = new JTextArea(" [Game]: Good luck and have fun!!\n");
 		chatBox.setLineWrap(true);
 		chatBox.setForeground(new Color(190, 190, 190));
 		chatBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 13));
@@ -200,6 +216,9 @@ public class ClientGame extends JDialog {
 		chatBox.setBounds(308, 124, 235, 174);
 		chatBox.setBorder(new LineBorder(new Color(10, 34, 46), 3, true));
 		chatBox.setBackground(new Color(15, 55, 77));
+		
+		DefaultCaret caret = (DefaultCaret)chatBox.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
 		jPaneChat = new JScrollPane(chatBox);
 		jPaneChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -222,11 +241,15 @@ public class ClientGame extends JDialog {
 						
 						GameManager.getClient().sendByte(GameUtils.NORMAL_MESSAGE);
 						GameManager.getClient().send(msgBox.getText());
+						
 						chatBox.append(" [You]: " + msgBox.getText() + "\n");
+						chatBox.setCaretPosition(chatBox.getDocument().getLength());
+						
 						msgBox.setText("");
 					} 
 					catch (IOException e1) {
 						AlertClass.showErrBox(null, "Connection Error", "An error occured while trying to send a message. Pleasy retry");
+						return;
 					}
 				}
 				if(msgBox.getText().length() > GameUtils.MAX_LEN_MESSAGE_BOX) {
@@ -541,7 +564,7 @@ public class ClientGame extends JDialog {
 		threadClient = new Thread() {
 			public void run() {
 				if(!handleConnection()) {
-					failedHandleConnection();
+					closeSocketAndWindow();
 					return;
 				}
 				/* get the shape of the client */
@@ -549,11 +572,51 @@ public class ClientGame extends JDialog {
 					GameManager.setClientShape(GameManager.getClient().read());
 				} catch (IOException e) {
 					AlertClass.showErrBox(null, "Connection Error", e.getMessage());
-					failedHandleConnection();
+					closeSocketAndWindow();
 					return;
 				}
 				makeThingsVisible(true);
 				GameUtils.setTurnsColors(lblNewLabel_1, nickServerLabel, Colors.whiteSmoke, Colors.green);
+				
+				Byte bMsg;
+				String msg;
+				
+				/* listen messages */
+				while(true) {
+					try {
+						bMsg = GameManager.getClient().readByte();
+						
+						switch(bMsg) {
+						case GameUtils.NORMAL_MESSAGE:
+							msg = GameManager.getClient().read();
+							chatBox.append(" [" + GameManager.getNickServer() + "]: " + msg + "\n");
+							break;
+							
+						case GameUtils.GAME_MESSAGE:
+							msg = GameManager.getClient().read();
+							break;
+						
+						case GameUtils.EXIT_MESSAGE:
+							AlertClass.showMsgBox(null, "Game Info", GameManager.getNickServer() + " left the game ;/");
+							closeSocketAndWindow();
+							return;
+							
+						default:
+							break;
+						}
+					} 
+					catch (IOException e) {
+						if(windowClosed) {
+							closeSocketAndWindow();
+							return;
+						}
+						else {
+							AlertClass.showErrBox(null, "Connection Error", "An error occured while trying to comunicate with the other side.");
+							closeSocketAndWindow();
+							return;
+						}
+					}
+				}
 			}
 		};
 		
