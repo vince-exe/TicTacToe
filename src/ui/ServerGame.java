@@ -2,6 +2,7 @@ package ui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,7 +25,6 @@ import java.awt.Font;
 
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
-import javax.swing.text.DefaultCaret;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -32,6 +32,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseWheelEvent;
 
 public class ServerGame extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -48,9 +50,11 @@ public class ServerGame extends JDialog {
 	private JLabel timeLabel;
 	private JTextArea chatBox;
 	private JScrollPane jPaneChat;
+	private JLabel notificationLabel;
 	
 	private static boolean windowClosed;
 	private static boolean handleConnErr;
+	private static boolean updateChat;
 	
 	private static Thread threadServer;
 	private JTextField msgBox;
@@ -65,6 +69,7 @@ public class ServerGame extends JDialog {
 		try {
 			windowClosed = false;
 			handleConnErr = false;
+			updateChat = true;
 			
 			dialog = new ServerGame();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -142,7 +147,6 @@ public class ServerGame extends JDialog {
 	public void closeSocketAndWindow() {
 		GameManager.getServer().shutdown();
 		dispose();
-		MainWindow.setVisible(true);
 	}
 	
 	public void makeThingsVisible(boolean b) {
@@ -236,10 +240,14 @@ public class ServerGame extends JDialog {
 		chatBox.setBorder(new LineBorder(new Color(10, 34, 46), 3, true));
 		chatBox.setBackground(new Color(15, 55, 77));
 		
-		DefaultCaret caret = (DefaultCaret)chatBox.getCaret();
-		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		
 		jPaneChat = new JScrollPane(chatBox);
+		jPaneChat.addMouseWheelListener(new MouseWheelListener() {
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if(chatBox.getDocument().getLength() > 150) {
+					updateChat = false;
+				}
+			}
+		});
 		jPaneChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		jPaneChat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		jPaneChat.setBorder(null);
@@ -277,7 +285,7 @@ public class ServerGame extends JDialog {
 						
 						chatBox.append(" [You]: " + msgBox.getText() + "\n");
 						chatBox.setCaretPosition(chatBox.getDocument().getLength());
-						
+						notificationLabel.setVisible(false);
 						msgBox.setText("");
 					} 
 					catch (IOException e1) {
@@ -562,6 +570,24 @@ public class ServerGame extends JDialog {
 		waitingLabel.setBounds(111, 145, 348, 58);
 		contentPanel.add(waitingLabel);
 		
+		notificationLabel = new JLabel("");
+		notificationLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				chatBox.setCaretPosition(chatBox.getDocument().getLength());
+				notificationLabel.setVisible(false);
+				updateChat = true;
+			}
+		});
+		notificationLabel.setVisible(false);
+		notificationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		notificationLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		notificationLabel.setForeground(new Color(15, 49, 66));
+		notificationLabel.setBackground(new Color(15, 49, 66));
+		notificationLabel.setIcon(new ImageIcon(ServerGame.class.getResource("/ui/resources/32-32.png")));
+		notificationLabel.setBounds(518, 94, 25, 25);
+		contentPanel.add(notificationLabel);
+		
 		/* Hide all the components */
 		makeThingsVisible(false);
 		
@@ -600,6 +626,13 @@ public class ServerGame extends JDialog {
 						case GameUtils.NORMAL_MESSAGE:
 							msg = GameManager.getServer().read();
 							chatBox.append(" [" + GameManager.getNickClient() + "]: " + msg + "\n");
+							
+							if(updateChat) {
+								chatBox.setCaretPosition(chatBox.getDocument().getLength());
+							}
+							else if(chatBox.getCaretPosition() < chatBox.getDocument().getLength()) {
+								notificationLabel.setVisible(true);
+							}
 							break;
 							
 						case GameUtils.GAME_MESSAGE:

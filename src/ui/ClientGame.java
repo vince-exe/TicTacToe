@@ -2,12 +2,12 @@ package ui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.text.DefaultCaret;
 
 import main.GameManager;
 import utils.AlertClass;
@@ -30,6 +30,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.KeyAdapter;
 import javax.swing.JScrollPane;
 
@@ -59,10 +61,13 @@ public class ClientGame extends JDialog {
 	private JLabel playLabel_1_1;
 	private JLabel playLabel_0_1;
 	private JLabel playLabel_0_2;
+	private JLabel notificationLabel;
+	
 	private JScrollPane jPaneChat;
 	
 	private static boolean windowClosed;
 	private static boolean handleConnErr;
+	private static boolean updateChat;
 	
 	/**
 	 * Launch the application.
@@ -71,6 +76,7 @@ public class ClientGame extends JDialog {
 		try {
 			windowClosed = false;
 			handleConnErr = false;
+			updateChat = true;
 			
 			dialog = new ClientGame();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -148,7 +154,6 @@ public class ClientGame extends JDialog {
 	public void closeSocketAndWindow() {
 		GameManager.getClient().shutdown();
 		dispose();
-		MainWindow.setVisible(true);
 	}
 	
 	public void makeThingsVisible(boolean b) {
@@ -217,10 +222,14 @@ public class ClientGame extends JDialog {
 		chatBox.setBorder(new LineBorder(new Color(10, 34, 46), 3, true));
 		chatBox.setBackground(new Color(15, 55, 77));
 		
-		DefaultCaret caret = (DefaultCaret)chatBox.getCaret();
-		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		
 		jPaneChat = new JScrollPane(chatBox);
+		jPaneChat.addMouseWheelListener(new MouseWheelListener() {
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				if(chatBox.getDocument().getLength() > 150) {
+					updateChat = false;
+				}
+			}
+		});
 		jPaneChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		jPaneChat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		jPaneChat.setBorder(null);
@@ -244,7 +253,7 @@ public class ClientGame extends JDialog {
 						
 						chatBox.append(" [You]: " + msgBox.getText() + "\n");
 						chatBox.setCaretPosition(chatBox.getDocument().getLength());
-						
+						notificationLabel.setVisible(false);
 						msgBox.setText("");
 					} 
 					catch (IOException e1) {
@@ -558,6 +567,16 @@ public class ClientGame extends JDialog {
 		playLabel_0_2.setBounds(200, 134, 57, 46);
 		contentPanel.add(playLabel_0_2);
 		
+		notificationLabel = new JLabel();
+		notificationLabel.setVisible(false);
+		notificationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		notificationLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		notificationLabel.setForeground(new Color(15, 49, 66));
+		notificationLabel.setBackground(new Color(15, 49, 66));
+		notificationLabel.setIcon(new ImageIcon(ServerGame.class.getResource("/ui/resources/32-32.png")));
+		notificationLabel.setBounds(518, 94, 25, 25);
+		contentPanel.add(notificationLabel);
+		
 		/* Hide all the components */
 		makeThingsVisible(false);
 		/* start the thread to listen a client connection */
@@ -590,6 +609,13 @@ public class ClientGame extends JDialog {
 						case GameUtils.NORMAL_MESSAGE:
 							msg = GameManager.getClient().read();
 							chatBox.append(" [" + GameManager.getNickServer() + "]: " + msg + "\n");
+							
+							if(updateChat) {
+								chatBox.setCaretPosition(chatBox.getDocument().getLength());
+							}
+							else if(chatBox.getCaretPosition() < chatBox.getDocument().getLength()) {
+								notificationLabel.setVisible(true);
+							}
 							break;
 							
 						case GameUtils.GAME_MESSAGE:

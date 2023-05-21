@@ -90,7 +90,6 @@ public class MainWindow {
 					
 					/* can't use and && operator, because then there will be 2 error messages */
 					if(IpPortDialog.success) {
-						windowStat.frmTictactoe.setVisible(false);
 						ServerGame.main(null);
 					}
 					else {
@@ -131,7 +130,6 @@ public class MainWindow {
 					
 					/* can't use and && operator, because then there will be 2 error messages */
 					if(IpPortDialog.success) {
-						windowStat.frmTictactoe.setVisible(false);
 						ClientGame.main(null);
 					}
 					else {
