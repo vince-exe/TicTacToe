@@ -214,6 +214,14 @@ public class ClientGame extends JDialog {
 		contentPanel.add(nickServerLabel);
 		
 		chatBox = new JTextArea(" [Game]: Good luck and have fun!!\n");
+		chatBox.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if((e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) && chatBox.getDocument().getLength() > 150) {
+					updateChat = false;
+				}
+			}
+		});
 		chatBox.setLineWrap(true);
 		chatBox.setForeground(new Color(190, 190, 190));
 		chatBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 13));
