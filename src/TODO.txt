@@ -1,14 +1,11 @@
 **PRIORITA**
 
 **ORDINE IMPLEMENTAZIONE**
--chat 
 -vittoria ( quindi game funzionante )
 -uscita di finestra ( mentre si gioca, si esce dalla finestra )
 -fine tempo ( quando si finisce il tempo )
-
-**ORDINE IMPLEMENTAZIONE**
--rivincita ( ad ogni vittoria appare un pulsante per la rivincita ), viene cambiato l'ordine di gioco e le forme vengono invertite ( facoltativo ).
--chat, la chat per parlare
+-rivincita
 
 **LAVORANDO A**
--chat
+-funzione che passata la matrice controlla (nulla / pareggio / sconfitta / vittoria )
+-sistema di mosse con turno

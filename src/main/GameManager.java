@@ -17,6 +17,33 @@ public class GameManager {
 	private static String clientShape;
 	private static String serverShape;
 	
+	private static boolean firstTime;
+	private static String playerTurn;
+	
+	public static String getTurn() {
+		return playerTurn;
+	}
+	
+	public static boolean isClientTurn() {
+		return playerTurn.equals("client");
+	}
+	
+	public static boolean isServerTurn() {
+		return playerTurn.equals("server");
+	}
+	
+	public static void setClientTurn() {
+		playerTurn = "client";
+	}
+	
+	public static boolean isFirstTime() {
+		return firstTime;
+	}
+	
+	public static void setServerTurn() {
+		playerTurn = "server";
+	}
+	
 	public static void setClientShape(String s) {
 		clientShape = s;
 	}
@@ -43,6 +70,15 @@ public class GameManager {
 	
 	public static Client getClient() {
 		return client;
+	}
+		
+	public static void initGameVariables() {
+		firstTime = true;
+		playerTurn = "";
+	}
+	
+	public static void randomAssignTurn() {
+		playerTurn = (ThreadLocalRandom.current().nextInt(0, 1 + 1) == 1) ? "server" : "client";
 	}
 	
 	public static String initServer(String ip, int port, String nickServer_) {

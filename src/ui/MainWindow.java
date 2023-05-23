@@ -11,6 +11,8 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 
+import main.GameManager;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -90,6 +92,7 @@ public class MainWindow {
 					
 					/* can't use and && operator, because then there will be 2 error messages */
 					if(IpPortDialog.success) {
+						GameManager.initGameVariables();
 						ServerGame.main(null);
 					}
 					else {
@@ -130,6 +133,7 @@ public class MainWindow {
 					
 					/* can't use and && operator, because then there will be 2 error messages */
 					if(IpPortDialog.success) {
+						GameManager.initGameVariables();
 						ClientGame.main(null);
 					}
 					else {

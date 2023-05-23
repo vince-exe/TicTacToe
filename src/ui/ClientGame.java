@@ -590,20 +590,31 @@ public class ClientGame extends JDialog {
 		/* start the thread to listen a client connection */
 		threadClient = new Thread() {
 			public void run() {
-				if(!handleConnection()) {
-					closeSocketAndWindow();
-					return;
+				if(GameManager.isFirstTime()) {
+					if(!handleConnection()) {
+						closeSocketAndWindow();
+						return;
+					}
 				}
-				/* get the shape of the client */
+
 				try {
+					/* get the shape of the client */
 					GameManager.setClientShape(GameManager.getClient().read());
+					/* get the turn */
+					if(GameManager.getClient().read().equals("client")) {
+						GameManager.setClientTurn();
+					}
+					else {
+						GameManager.setServerTurn();
+					}
 				} catch (IOException e) {
 					AlertClass.showErrBox(null, "Connection Error", e.getMessage());
 					closeSocketAndWindow();
 					return;
 				}
 				makeThingsVisible(true);
-				GameUtils.setTurnsColors(lblNewLabel_1, nickServerLabel, Colors.whiteSmoke, Colors.green);
+				System.out.print("\nFinestra Client Turno del: " + GameManager.getTurn());
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, GameManager.isClientTurn());
 				
 				Byte bMsg;
 				String msg;

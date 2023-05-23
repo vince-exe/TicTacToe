@@ -602,16 +602,22 @@ public class ServerGame extends JDialog {
 		/* start the thread to listen a client connection */
 		threadServer = new Thread() {
 			public void run() {
-				if(!handleConnection()) {
-					closeSocketAndWindow();
-					return;
+				if(GameManager.isFirstTime()) {
+					if(!handleConnection()) {
+						closeSocketAndWindow();
+						return;
+					}
 				}
 				/* asssign the X or O to the players ( random ) */
 				GameManager.initShapes();
+				/* assign the turn */
+				GameUtils.setTurn();
 				
 				try {
 					/* send the shape to the client */
 					GameManager.getServer().send(GameManager.getClientShape());
+					/* send the turn */
+					GameManager.getServer().send(GameManager.getTurn());
 				} 
 				catch (IOException e) {
 					AlertClass.showErrBox(null, "Connection Error", e.getMessage());
@@ -620,7 +626,8 @@ public class ServerGame extends JDialog {
 				}
 				
 				makeThingsVisible(true);
-				GameUtils.setTurnsColors(lblNewLabel_1, nickClientLabel, Colors.green, Colors.whiteSmoke);
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, GameManager.isServerTurn());
+				System.out.print("\nFinestra Server Turno del: " + GameManager.getTurn());
 				
 				Byte bMsg;
 				String msg;
