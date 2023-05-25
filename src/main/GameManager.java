@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import network.*;
@@ -19,6 +20,8 @@ public class GameManager {
 	
 	private static boolean firstTime;
 	private static String playerTurn;
+	
+	private static ArrayList<ArrayList<Character>> matrix;
 	
 	public static String getTurn() {
 		return playerTurn;
@@ -48,6 +51,10 @@ public class GameManager {
 		clientShape = s;
 	}
 	
+	public static void setServerShape(String s) {
+		serverShape = s;
+	}
+	
 	public static String getClientShape() {
 		return clientShape;
 	}
@@ -75,6 +82,18 @@ public class GameManager {
 	public static void initGameVariables() {
 		firstTime = true;
 		playerTurn = "";
+	}
+	
+	public static void initMatrix() {
+		matrix = new ArrayList<>(3);
+		
+        for (int i = 0; i < 3; i++) {
+            ArrayList<Character> row = new ArrayList<>(3);
+            for (int j = 0; j < 3; j++) {
+                row.add(null);
+            }
+            matrix.add(row);
+        }
 	}
 	
 	public static void randomAssignTurn() {
@@ -123,4 +142,75 @@ public class GameManager {
 			clientShape = "X";
 		}
 	}
+	
+    public static boolean checkTrees(ArrayList<ArrayList<Character>> tab, int r, int m, Character who) {
+        if (checkRow(tab, r, who)) {
+            return true;
+        }
+        
+        if (checkColumn(tab, m, who)) {
+            return true;
+        }
+        
+        if (((r + m) % 2 != 0)) {
+            return checkDiagonal(tab, who, r, m);
+        }
+        return false;
+    }
+    
+    private static boolean checkMainDiagonal(ArrayList<ArrayList<Character>> tab, Character who) {
+        int count = 0;
+        
+        for (int i = 0; i < 3; i++) {
+            Character current = tab.get(i).get(i);
+            if (current == null || !current.equals(who)) {
+                return false;
+            }
+            count++;
+        }
+        
+        return count == 3;
+    }
+    
+    private static boolean checkSecondaryDiagonal(ArrayList<ArrayList<Character>> tab, Character who) {
+        int count = 0;
+        
+        for (int i = 0; i < 3; i++) {
+            Character current = tab.get(i).get(2 - i);
+            if (current == null || !current.equals(who)) {
+                return false;
+            }
+            count++;
+        }
+        
+        return count == 3;
+    }
+    
+    private static boolean checkRow(ArrayList<ArrayList<Character>> tab, int r, Character who) {
+        for (int i = 0; i < 3; i++) {
+            Character current = tab.get(r).get(i);
+            if (current == null || !current.equals(who)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private static boolean checkColumn(ArrayList<ArrayList<Character>> tab, int m, Character who) {
+        for (int i = 0; i < 3; i++) {
+            Character current = tab.get(i).get(m);
+            if (current == null || !current.equals(who)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private static boolean checkDiagonal(ArrayList<ArrayList<Character>> tab, Character who, int r, int m) {
+        if (r != m) {
+            return checkSecondaryDiagonal(tab, who);
+        } else {
+            return checkMainDiagonal(tab, who);
+        }
+    }
 }

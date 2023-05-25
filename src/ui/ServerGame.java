@@ -328,7 +328,7 @@ public class ServerGame extends JDialog {
 		playLabel0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel0.getText().isEmpty()) {
+				if(!playLabel0.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				
@@ -356,7 +356,7 @@ public class ServerGame extends JDialog {
 		playLabel0_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel0_1.getText().isEmpty()) {
+				if(!playLabel0_1.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				playLabel0_1.setText(GameManager.getServerShape());
@@ -383,7 +383,7 @@ public class ServerGame extends JDialog {
 		playLabel0_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel0_2.getText().isEmpty()) {
+				if(!playLabel0_2.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				playLabel0_2.setText(GameManager.getServerShape());
@@ -410,7 +410,7 @@ public class ServerGame extends JDialog {
 		playLabel1_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel1_2.getText().isEmpty()) {
+				if(!playLabel1_2.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				playLabel1_2.setText(GameManager.getServerShape());
@@ -437,7 +437,7 @@ public class ServerGame extends JDialog {
 		playLabel1_0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel1_0.getText().isEmpty()) {
+				if(!playLabel1_0.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				playLabel1_0.setText(GameManager.getServerShape());
@@ -464,7 +464,7 @@ public class ServerGame extends JDialog {
 		playLabel1_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel1_1.getText().isEmpty()) {
+				if(!playLabel1_1.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				playLabel1_1.setText(GameManager.getServerShape());
@@ -491,7 +491,7 @@ public class ServerGame extends JDialog {
 		playLabel2_0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel2_0.getText().isEmpty()) {
+				if(!playLabel2_0.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				playLabel2_0.setText(GameManager.getServerShape());
@@ -518,7 +518,7 @@ public class ServerGame extends JDialog {
 		playLabel2_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel2_1.getText().isEmpty()) {
+				if(!playLabel2_1.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				playLabel2_1.setText(GameManager.getServerShape());
@@ -545,7 +545,7 @@ public class ServerGame extends JDialog {
 		playLabel2_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel2_2.getText().isEmpty()) {
+				if(!playLabel2_2.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
 				playLabel2_2.setText(GameManager.getServerShape());
@@ -612,6 +612,8 @@ public class ServerGame extends JDialog {
 				GameManager.initShapes();
 				/* assign the turn */
 				GameUtils.setTurn();
+				/* initialize the tic-tac-toe matrix */
+				GameManager.initMatrix();
 				
 				try {
 					/* send the shape to the client */
@@ -624,10 +626,9 @@ public class ServerGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
-				
+				System.out.print("\nClient shape: " + GameManager.getClientShape());
 				makeThingsVisible(true);
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, GameManager.isServerTurn());
-				System.out.print("\nFinestra Server Turno del: " + GameManager.getTurn());
 				
 				Byte bMsg;
 				String msg;

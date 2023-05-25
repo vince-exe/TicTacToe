@@ -345,7 +345,7 @@ public class ClientGame extends JDialog {
 		playLabel_0_0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_0_0.getText().isEmpty()) {
+				if(!playLabel_0_0.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_0_0.setText(GameManager.getClientShape());
@@ -371,7 +371,7 @@ public class ClientGame extends JDialog {
 		playLabel_1_0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_1_0.getText().isEmpty()) {
+				if(!playLabel_1_0.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_1_0.setText(GameManager.getClientShape());
@@ -397,7 +397,7 @@ public class ClientGame extends JDialog {
 		playLabel_2_0.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_2_0.getText().isEmpty()) {
+				if(!playLabel_2_0.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_2_0.setText(GameManager.getClientShape());
@@ -423,7 +423,7 @@ public class ClientGame extends JDialog {
 		playLabel_2_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_2_1.getText().isEmpty()) {
+				if(!playLabel_2_1.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_2_1.setText(GameManager.getClientShape());
@@ -449,7 +449,7 @@ public class ClientGame extends JDialog {
 		playLabel_2_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_2_2.getText().isEmpty()) {
+				if(!playLabel_2_2.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_2_2.setText(GameManager.getClientShape());
@@ -475,7 +475,7 @@ public class ClientGame extends JDialog {
 		playLabel_1_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_1_2.getText().isEmpty()) {
+				if(!playLabel_1_2.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_1_2.setText(GameManager.getClientShape());
@@ -501,7 +501,7 @@ public class ClientGame extends JDialog {
 		playLabel_1_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_1_1.getText().isEmpty()) {
+				if(!playLabel_1_1.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_1_1.setText(GameManager.getClientShape());
@@ -527,7 +527,7 @@ public class ClientGame extends JDialog {
 		playLabel_0_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_0_1.getText().isEmpty()) {
+				if(!playLabel_0_1.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_0_1.setText(GameManager.getClientShape());
@@ -553,7 +553,7 @@ public class ClientGame extends JDialog {
 		playLabel_0_2.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!playLabel_0_2.getText().isEmpty()) {
+				if(!playLabel_0_2.getText().isEmpty() || !GameManager.isClientTurn()) {
 					return;
 				}
 				playLabel_0_2.setText(GameManager.getClientShape());
@@ -600,6 +600,14 @@ public class ClientGame extends JDialog {
 				try {
 					/* get the shape of the client */
 					GameManager.setClientShape(GameManager.getClient().read());
+					
+					if(GameManager.getClientShape().equals("O")) {
+						GameManager.setServerShape("X");
+					}
+					else {
+						GameManager.setServerShape("O");
+					}
+					
 					/* get the turn */
 					if(GameManager.getClient().read().equals("client")) {
 						GameManager.setClientTurn();
@@ -612,8 +620,10 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				/* initialize the tic-tac-toe matrix */
+				GameManager.initMatrix();
+
 				makeThingsVisible(true);
-				System.out.print("\nFinestra Client Turno del: " + GameManager.getTurn());
 				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, GameManager.isClientTurn());
 				
 				Byte bMsg;
