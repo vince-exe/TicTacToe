@@ -1,6 +1,8 @@
 package utils;
 
 import java.awt.Cursor;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 
@@ -16,7 +18,6 @@ public class GameUtils {
 	public final static byte NORMAL_MESSAGE = 0;
 	public final static byte GAME_MESSAGE = 1;
 	public final static byte EXIT_MESSAGE = 2;
-	public final static byte CONFIRM_EXIT = 3;
 
 	public static void setTurnColors(JLabel l1, JLabel l2, boolean myTurn) {
 		if(myTurn) {
@@ -39,5 +40,19 @@ public class GameUtils {
 		else {
 			GameManager.setClientTurn();
 		}
+	}
+	
+	public static boolean sendCoordinates(DataOutputStream data, int row, int col) {
+		try {
+			data.writeByte(GAME_MESSAGE);
+			data.writeByte(row);
+			data.writeByte(col);
+			
+			return true;
+		} 
+		catch (IOException e) {
+			return false;
+		}
+
 	}
 }

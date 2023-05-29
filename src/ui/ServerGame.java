@@ -169,7 +169,7 @@ public class ServerGame extends JDialog {
 	}
 	
 	/**
-	 * Create the dialog.
+	 * Create the dialog
 	 */
 	public ServerGame() {
 		setTitle("TicTacToe  [server]");
@@ -331,8 +331,13 @@ public class ServerGame extends JDialog {
 				if(!playLabel0.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
-				
-				playLabel0.setText(GameManager.getServerShape());
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 0, 0)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				playLabel0.setText(GameManager.getServerShape());	
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -359,6 +364,12 @@ public class ServerGame extends JDialog {
 				if(!playLabel0_1.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 0, 1)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel0_1.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -386,6 +397,12 @@ public class ServerGame extends JDialog {
 				if(!playLabel0_2.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 0, 2)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel0_2.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -413,6 +430,12 @@ public class ServerGame extends JDialog {
 				if(!playLabel1_2.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 1, 2)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel1_2.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -440,6 +463,12 @@ public class ServerGame extends JDialog {
 				if(!playLabel1_0.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 1, 0)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel1_0.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -467,6 +496,12 @@ public class ServerGame extends JDialog {
 				if(!playLabel1_1.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 1, 1)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel1_1.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -494,6 +529,12 @@ public class ServerGame extends JDialog {
 				if(!playLabel2_0.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 2, 0)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel2_0.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -521,6 +562,12 @@ public class ServerGame extends JDialog {
 				if(!playLabel2_1.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 2, 1)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel2_1.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -548,6 +595,12 @@ public class ServerGame extends JDialog {
 				if(!playLabel2_2.getText().isEmpty() || !GameManager.isServerTurn()) {
 					return;
 				}
+				if(!GameUtils.sendCoordinates(GameManager.getServer().getDataOutputStream(), 2, 2)) {
+					closeSocketAndWindow();
+					return;
+				}
+				GameManager.setClientTurn();
+				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel2_2.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -626,7 +679,6 @@ public class ServerGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
-				System.out.print("\nClient shape: " + GameManager.getClientShape());
 				makeThingsVisible(true);
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, GameManager.isServerTurn());
 				

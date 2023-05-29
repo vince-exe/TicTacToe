@@ -82,4 +82,8 @@ public class Server {
 	public boolean isClosed() {
 		return this.socket.isClosed();
 	}
+	
+	public DataOutputStream getDataOutputStream() {
+		return this.outputClient;
+	}
 }

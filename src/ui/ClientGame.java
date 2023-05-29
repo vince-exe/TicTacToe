@@ -628,6 +628,7 @@ public class ClientGame extends JDialog {
 				
 				Byte bMsg;
 				String msg;
+				int row, cols;
 				
 				/* listen messages */
 				while(true) {
@@ -648,7 +649,10 @@ public class ClientGame extends JDialog {
 							break;
 							
 						case GameUtils.GAME_MESSAGE:
-							msg = GameManager.getClient().read();
+							row = GameManager.getClient().readByte();
+							cols = GameManager.getClient().readByte();
+							
+							System.out.print("\nRiga: " + row + "  Colonna: " + cols);
 							break;
 						
 						case GameUtils.EXIT_MESSAGE:
