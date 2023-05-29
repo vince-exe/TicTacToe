@@ -60,8 +60,16 @@ public class ServerGame extends JDialog {
 	private JTextField msgBox;
 	
 	private static ServerGame dialog;
-	private JLabel playLabel0;
 	
+	private JLabel playLabel0;
+	private JLabel playLabel0_1;
+	private JLabel playLabel0_2;
+	private JLabel playLabel1_2;
+	private JLabel playLabel1_0;
+	private JLabel playLabel1_1;
+	private JLabel playLabel2_0;
+	private JLabel playLabel2_1;
+	private JLabel playLabel2_2;
 	/**
 	 * Launch the application.
 	 */
@@ -166,6 +174,41 @@ public class ServerGame extends JDialog {
 		
 		nickClientLabel.setVisible(b);
 		nickClientLabel.setText(GameManager.getNickClient());
+	}
+	public void printRowAndCol(int r, int c, String text) {
+		if(r == 0) {
+			if(c == 0) {
+				playLabel0.setText(text);
+			}
+			else if(c == 1) {
+				playLabel0_1.setText(text);
+			}
+			else {
+				playLabel0_2.setText(text);
+			}
+		}
+		else if (r == 1) {
+			if(c == 0) {
+				playLabel1_0.setText(text);
+			}
+			else if(c == 1) {
+				playLabel1_1.setText(text);
+			}
+			else {
+				playLabel1_2.setText(text);
+			}
+		}
+		else {
+			if(c == 0) {
+				playLabel2_0.setText(text);
+			}
+			else if(c == 1) {
+				playLabel2_1.setText(text);
+			}
+			else {
+				playLabel2_2.setText(text);
+			}
+		}
 	}
 	
 	/**
@@ -337,6 +380,7 @@ public class ServerGame extends JDialog {
 				}
 				GameManager.setClientTurn();
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				GameManager.addToMatrix(0, 0, GameManager.getServerShape().charAt(0));
 				playLabel0.setText(GameManager.getServerShape());	
 			}
 			@Override
@@ -353,7 +397,7 @@ public class ServerGame extends JDialog {
 		playLabel0.setBounds(47, 126, 60, 52);
 		contentPanel.add(playLabel0);
 		
-		JLabel playLabel0_1 = new JLabel("");
+		playLabel0_1 = new JLabel("");
 		playLabel0_1.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
 		playLabel0_1.setForeground(new Color(235, 235, 235));
 		playLabel0_1.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -370,6 +414,7 @@ public class ServerGame extends JDialog {
 				}
 				GameManager.setClientTurn();
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				GameManager.addToMatrix(0, 1, GameManager.getServerShape().charAt(0));
 				playLabel0_1.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -386,7 +431,7 @@ public class ServerGame extends JDialog {
 		playLabel0_1.setBounds(121, 124, 63, 55);
 		contentPanel.add(playLabel0_1);
 		
-		JLabel playLabel0_2 = new JLabel("");
+		playLabel0_2 = new JLabel("");
 		playLabel0_2.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
 		playLabel0_2.setForeground(new Color(235, 235, 235));
 		playLabel0_2.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -403,6 +448,7 @@ public class ServerGame extends JDialog {
 				}
 				GameManager.setClientTurn();
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				GameManager.addToMatrix(0, 2, GameManager.getServerShape().charAt(0));
 				playLabel0_2.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -419,7 +465,7 @@ public class ServerGame extends JDialog {
 		playLabel0_2.setBounds(198, 124, 63, 55);
 		contentPanel.add(playLabel0_2);
 		
-		JLabel playLabel1_2 = new JLabel("");
+		playLabel1_2 = new JLabel("");
 		playLabel1_2.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
 		playLabel1_2.setForeground(new Color(235, 235, 235));
 		playLabel1_2.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -436,6 +482,7 @@ public class ServerGame extends JDialog {
 				}
 				GameManager.setClientTurn();
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				GameManager.addToMatrix(1, 2, GameManager.getServerShape().charAt(0));
 				playLabel1_2.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -452,7 +499,7 @@ public class ServerGame extends JDialog {
 		playLabel1_2.setBounds(198, 192, 58, 47);
 		contentPanel.add(playLabel1_2);
 		
-		JLabel playLabel1_0 = new JLabel("");
+	    playLabel1_0 = new JLabel("");
 		playLabel1_0.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
 		playLabel1_0.setForeground(new Color(235, 235, 235));
 		playLabel1_0.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -468,6 +515,7 @@ public class ServerGame extends JDialog {
 					return;
 				}
 				GameManager.setClientTurn();
+				GameManager.addToMatrix(1, 0, GameManager.getServerShape().charAt(0));
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
 				playLabel1_0.setText(GameManager.getServerShape());
 			}
@@ -485,7 +533,7 @@ public class ServerGame extends JDialog {
 		playLabel1_0.setBounds(45, 192, 62, 47);
 		contentPanel.add(playLabel1_0);
 		
-		JLabel playLabel1_1 = new JLabel("");
+		playLabel1_1 = new JLabel("");
 		playLabel1_1.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
 		playLabel1_1.setForeground(new Color(235, 235, 235));
 		playLabel1_1.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -502,6 +550,7 @@ public class ServerGame extends JDialog {
 				}
 				GameManager.setClientTurn();
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				GameManager.addToMatrix(1, 1, GameManager.getServerShape().charAt(0));
 				playLabel1_1.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -518,7 +567,7 @@ public class ServerGame extends JDialog {
 		playLabel1_1.setBounds(123, 193, 60, 44);
 		contentPanel.add(playLabel1_1);
 		
-		JLabel playLabel2_0 = new JLabel("");
+		playLabel2_0 = new JLabel("");
 		playLabel2_0.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
 		playLabel2_0.setForeground(new Color(235, 235, 235));
 		playLabel2_0.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -535,6 +584,7 @@ public class ServerGame extends JDialog {
 				}
 				GameManager.setClientTurn();
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				GameManager.addToMatrix(2, 0, GameManager.getServerShape().charAt(0));
 				playLabel2_0.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -551,7 +601,7 @@ public class ServerGame extends JDialog {
 		playLabel2_0.setBounds(48, 252, 60, 48);
 		contentPanel.add(playLabel2_0);
 		
-		JLabel playLabel2_1 = new JLabel("");
+		playLabel2_1 = new JLabel("");
 		playLabel2_1.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
 		playLabel2_1.setForeground(new Color(235, 235, 235));
 		playLabel2_1.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -568,6 +618,7 @@ public class ServerGame extends JDialog {
 				}
 				GameManager.setClientTurn();
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				GameManager.addToMatrix(2, 1, GameManager.getServerShape().charAt(0));
 				playLabel2_1.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -584,7 +635,7 @@ public class ServerGame extends JDialog {
 		playLabel2_1.setBounds(123, 255, 59, 44);
 		contentPanel.add(playLabel2_1);
 		
-		JLabel playLabel2_2 = new JLabel("");
+		playLabel2_2 = new JLabel("");
 		playLabel2_2.setFont(new Font("Comic Sans MS", Font.BOLD, 35));
 		playLabel2_2.setForeground(new Color(235, 235, 235));
 		playLabel2_2.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -601,6 +652,7 @@ public class ServerGame extends JDialog {
 				}
 				GameManager.setClientTurn();
 				GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, false);
+				GameManager.addToMatrix(2, 2, GameManager.getServerShape().charAt(0));
 				playLabel2_2.setText(GameManager.getServerShape());
 			}
 			@Override
@@ -684,6 +736,7 @@ public class ServerGame extends JDialog {
 				
 				Byte bMsg;
 				String msg;
+				int row, col;
 				
 				/* listen messages */
 				while(true) {
@@ -704,7 +757,12 @@ public class ServerGame extends JDialog {
 							break;
 							
 						case GameUtils.GAME_MESSAGE:
-							msg = GameManager.getServer().read();
+							row = GameManager.getServer().readByte();
+							col = GameManager.getServer().readByte();
+							
+							GameManager.setServerTurn();
+							printRowAndCol(row, col, GameManager.getClientShape());
+							GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, true);
 							break;
 						
 						case GameUtils.EXIT_MESSAGE:

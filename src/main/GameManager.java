@@ -96,6 +96,14 @@ public class GameManager {
         }
 	}
 	
+	public static ArrayList<ArrayList<Character>> getMatrix() {
+		return matrix;
+	}
+	
+	public static void addToMatrix(int row, int cols, Character c) {
+		matrix.get(row).set(cols, c);
+	}
+	
 	public static void randomAssignTurn() {
 		playerTurn = (ThreadLocalRandom.current().nextInt(0, 1 + 1) == 1) ? "server" : "client";
 	}
