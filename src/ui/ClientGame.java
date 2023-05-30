@@ -69,6 +69,7 @@ public class ClientGame extends JDialog {
 	private static boolean windowClosed;
 	private static boolean handleConnErr;
 	private static boolean updateChat;
+	private static boolean closingForRevenge;
 	
 	/**
 	 * Launch the application.
@@ -78,6 +79,7 @@ public class ClientGame extends JDialog {
 			windowClosed = false;
 			handleConnErr = false;
 			updateChat = true;
+			closingForRevenge = false;
 			
 			dialog = new ClientGame();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -98,7 +100,7 @@ public class ClientGame extends JDialog {
 
 				@Override
 				public void windowClosed(WindowEvent e) {
-					if(!GameManager.getClient().isClosed() && !handleConnErr) {
+					if(!GameManager.getClient().isClosed() && !handleConnErr && !closingForRevenge) {
 						try {
 							windowClosed = true;
 							GameManager.getClient().sendByte(GameUtils.EXIT_MESSAGE);
@@ -216,7 +218,7 @@ public class ClientGame extends JDialog {
 	 */
 	public ClientGame() {
 		setResizable(false);
-		setTitle("TicTacToe  [client]");
+		setTitle("Tic-Tac-Toe  [client]");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ClientGame.class.getResource("/ui/resources/icon.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setAutoRequestFocus(false);
@@ -234,7 +236,7 @@ public class ClientGame extends JDialog {
 		titleLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 38));
 		contentPanel.add(titleLabel);
 		
-		lblNewLabel_1 = new JLabel("You");
+		lblNewLabel_1 = new JLabel("Tu");
 		lblNewLabel_1.setBounds(44, 37, 58, 39);
 		lblNewLabel_1.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
 		lblNewLabel_1.setForeground(new Color(235, 235, 235));
@@ -753,10 +755,26 @@ public class ClientGame extends JDialog {
 							col = GameManager.getClient().readByte();
 							
 							printRowAndCol(row, col, GameManager.getServerShape());
+							GameManager.addToMatrix(row, col, GameManager.getServerShape().charAt(0));
 							GameManager.setClientTurn();
 							GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, true);
+							
+							/* check if the server has won */
+							if(GameUtils.checkTrees(GameManager.getMatrix(), row, col, GameManager.getServerShape().charAt(0))) {
+								GameManager.getClient().sendByte(GameUtils.GAME_VICTORY);
+								RevengeDialog.main(false, false);
+
+								closingForRevenge = true;
+								dispose();
+								return;
+							}
 							break;
-						
+							
+						case GameUtils.GAME_VICTORY:
+							RevengeDialog.main(true, false);
+							closingForRevenge = true;
+							return;
+							
 						case GameUtils.EXIT_MESSAGE:
 							AlertClass.showMsgBox(null, "Game Info", GameManager.getNickServer() + " left the game ;/");
 							closeSocketAndWindow();

@@ -1,11 +1,9 @@
 **PRIORITA**
 
-**ORDINE IMPLEMENTAZIONE**
--vittoria ( quindi game funzionante )
--uscita di finestra ( mentre si gioca, si esce dalla finestra )
--fine tempo ( quando si finisce il tempo )
+**ORDINE IMPLEMENTAZIONE** 
+-pareggio
 -rivincita
+-fine tempo ( quando si finisce il tempo )
 
-**LAVORANDO A**
--funzione che passata la matrice controlla (nulla / pareggio / sconfitta / vittoria )
--sistema di mosse con turno
+**LAVORANDO A**:
+-pareggio

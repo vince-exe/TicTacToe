@@ -53,7 +53,7 @@ public class NicknameDialog extends JDialog {
 	public NicknameDialog() {
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setTitle("Nickname Dialog");
+		setTitle("Nickname");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(NicknameDialog.class.getResource("/ui/resources/icon.png")));
 		setBounds(100, 100, 308, 300);
 		getContentPane().setLayout(new BorderLayout());
