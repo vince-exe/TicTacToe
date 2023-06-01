@@ -1,9 +1,8 @@
 **PRIORITA**
 
 **ORDINE IMPLEMENTAZIONE** 
--pareggio
--rivincita
 -fine tempo ( quando si finisce il tempo )
 
 **LAVORANDO A**:
--pareggio
+-pareggio / vittoria / sconfitta
+-revenge dialog

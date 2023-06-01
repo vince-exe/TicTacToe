@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 
 import main.GameManager;
-
+import main.Point;
 
 public class GameUtils {
 	public final static Cursor CROSSHAIR_CURSOR = new Cursor(Cursor.CROSSHAIR_CURSOR);
@@ -19,7 +19,15 @@ public class GameUtils {
 	public final static byte NORMAL_MESSAGE = 0;
 	public final static byte GAME_MESSAGE = 1;
 	public final static byte EXIT_MESSAGE = 2;
+	public final static byte GAME_DRAW = 3;
+	
 	public final static byte GAME_VICTORY = 10;
+	
+	public enum GameStatus {
+		DRAW,
+		WON,
+		LOST
+	}
 	
 	public static void setTurnColors(JLabel l1, JLabel l2, boolean myTurn) {
 		if(myTurn) {
@@ -58,53 +66,56 @@ public class GameUtils {
 
 	}
 	
-    public static boolean checkTrees(ArrayList<ArrayList<Character>> tab, int r, int m, Character who) {
-        if (checkRow(tab, r, who)) {
-            return true;
+    public static ArrayList<Point> checkTrees(ArrayList<ArrayList<Character>> tab, int r, int m, Character who) {
+    	ArrayList<Point> coords = checkRow(tab, r, who);
+    	if (coords != null) {
+            return coords;
         }
-        
-        if (checkColumn(tab, m, who)) {
-            return true;
+    	coords = checkColumn(tab, m, who);
+        if (coords != null) {
+            return coords;
         }
         
         if (((r + m) % 2 == 0)) {
             return checkDiagonal(tab, who, r, m);
         }
-        return false;
+        
+        return new ArrayList<Point>();
     }
     
-    public static void printTab(ArrayList<ArrayList<Character>> tab) {
-        for(int i = 0; i <3 ; i++) {
-        	for(int j = 0; j < 3; j++) {
-        		System.out.print(tab.get(i).get(j) + " ");
-        	}
-        	System.out.print("\n");
-        }
-    }
-    
-    private static boolean checkRow(ArrayList<ArrayList<Character>> tab, int r, Character who) {
-        for (int i = 0; i < 3; i++) {
+    private static ArrayList<Point> checkRow(ArrayList<ArrayList<Character>> tab, int r, Character who) {
+    	ArrayList<Point> coords = new ArrayList<>();               
+    	for (int i = 0; i < 3; i++) {
             Character current = tab.get(r).get(i);
             if (current == null || !current.equals(who)) {
-            	return false;
+            	return null;
             }
+            coords.add(new Point(r,i));
         }
-        return true;
+        return coords;
     }
     
-    private static boolean checkColumn(ArrayList<ArrayList<Character>> tab, int m, Character who) {
-        for (int i = 0; i < 3; i++) {
+    private static  ArrayList<Point> checkColumn(ArrayList<ArrayList<Character>> tab, int m, Character who) {
+    	ArrayList<Point> coords = new ArrayList<>();
+    	for (int i = 0; i < 3; i++) {
             Character current = tab.get(i).get(m);
             if (current == null || !current.equals(who)) {
-                return false;
+                return null;
             }
+            coords.add(new Point(i,m));
         }
-        return true;
+        return coords;
     }
     
-    private static boolean checkDiagonal(ArrayList<ArrayList<Character>> tab, Character who, int r, int m) {
-        if(r == 1 && m == 1) {
-        	return (checkSecondaryDiagonal(tab, who) == true || checkMainDiagonal(tab, who) == true);
+    private static ArrayList<Point> checkDiagonal(ArrayList<ArrayList<Character>> tab, Character who, int r, int m) {
+    	ArrayList<Point> coords = null;
+    	if(r == 1 && m == 1) {
+    		coords = checkSecondaryDiagonal(tab, who);
+    		if(coords != null) return coords; 
+    		coords =  checkMainDiagonal(tab, who);
+    		if(coords != null) return coords; 
+    		
+    		return new ArrayList<Point>();
         }
     	if (r != m) {
     		return checkSecondaryDiagonal(tab, who);
@@ -114,26 +125,29 @@ public class GameUtils {
     	}
     }
     
-    private static boolean checkMainDiagonal(ArrayList<ArrayList<Character>> tab, Character who) {
-        for (int i = 0; i < 3; i++) {
+    private static ArrayList<Point> checkMainDiagonal(ArrayList<ArrayList<Character>> tab, Character who) {
+    	ArrayList<Point> coords = new ArrayList<>();
+    	for (int i = 0; i < 3; i++) {
             Character current = tab.get(i).get(i);
             if (current == null || !current.equals(who)) {
-                return false;
+                return new ArrayList<Point>();
             }
+            coords.add(new Point(i,i));
         }
-        
-        return true;
+    	
+        return coords;
     }
     
-    private static boolean checkSecondaryDiagonal(ArrayList<ArrayList<Character>> tab, Character who) {
-        
+    private static ArrayList<Point> checkSecondaryDiagonal(ArrayList<ArrayList<Character>> tab, Character who) {
+        ArrayList<Point> coords = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Character current = tab.get(i).get(2 - i);
             if (current == null || !current.equals(who)) {
-                return false;
+                return new ArrayList<Point>();
             }
+            coords.add(new Point(i, 2-i));
         }
         
-        return true;
+        return coords;
     }
 }

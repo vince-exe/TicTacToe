@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import main.GameManager;
+import main.Point;
 import utils.AlertClass;
 import utils.Colors;
 import utils.GameUtils;
@@ -18,6 +19,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Font;
 
@@ -40,8 +42,6 @@ public class ClientGame extends JDialog {
 	
 	private final JPanel contentPanel = new JPanel();
 	
-	private static Thread threadClient;
-	
 	private JTextField msgBox;
 	private JLabel titleLabel;
 	private JLabel lblNewLabel_1;
@@ -52,6 +52,8 @@ public class ClientGame extends JDialog {
 	private JLabel waitingLabel;
 	
 	private static ClientGame dialog;
+	private static Thread threadClient;
+	private static ArrayList<Point> coordinates;
 	
 	private JLabel playLabel_0_0;
 	private JLabel playLabel_1_0;
@@ -69,7 +71,6 @@ public class ClientGame extends JDialog {
 	private static boolean windowClosed;
 	private static boolean handleConnErr;
 	private static boolean updateChat;
-	private static boolean closingForRevenge;
 	
 	/**
 	 * Launch the application.
@@ -79,7 +80,8 @@ public class ClientGame extends JDialog {
 			windowClosed = false;
 			handleConnErr = false;
 			updateChat = true;
-			closingForRevenge = false;
+			
+			coordinates = new ArrayList<Point>();
 			
 			dialog = new ClientGame();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -100,7 +102,7 @@ public class ClientGame extends JDialog {
 
 				@Override
 				public void windowClosed(WindowEvent e) {
-					if(!GameManager.getClient().isClosed() && !handleConnErr && !closingForRevenge) {
+					if(!GameManager.getClient().isClosed() && !handleConnErr) {
 						try {
 							windowClosed = true;
 							GameManager.getClient().sendByte(GameUtils.EXIT_MESSAGE);
@@ -157,6 +159,12 @@ public class ClientGame extends JDialog {
 	public void closeSocketAndWindow() {
 		GameManager.getClient().shutdown();
 		dispose();
+	}
+	
+	public boolean isDraw() {
+		return !playLabel_0_0.getText().isEmpty() && !playLabel_0_1.getText().isEmpty() && !playLabel_0_2.getText().isEmpty() &&
+			   !playLabel_1_0.getText().isEmpty() && !playLabel_1_1.getText().isEmpty() && !playLabel_1_2.getText().isEmpty() && 
+			   !playLabel_2_0.getText().isEmpty() && !playLabel_2_1.getText().isEmpty() && !playLabel_2_2.getText().isEmpty();
 	}
 	
 	public void makeThingsVisible(boolean b) {
@@ -753,27 +761,54 @@ public class ClientGame extends JDialog {
 						case GameUtils.GAME_MESSAGE:
 							row = GameManager.getClient().readByte();
 							col = GameManager.getClient().readByte();
+							coordinates.clear();
 							
 							printRowAndCol(row, col, GameManager.getServerShape());
 							GameManager.addToMatrix(row, col, GameManager.getServerShape().charAt(0));
 							GameManager.setClientTurn();
 							GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, true);
 							
+							coordinates = GameUtils.checkTrees(GameManager.getMatrix(), row, col, GameManager.getServerShape().charAt(0));
+							
 							/* check if the server has won */
-							if(GameUtils.checkTrees(GameManager.getMatrix(), row, col, GameManager.getServerShape().charAt(0))) {
+							if(!coordinates.isEmpty()) {
 								GameManager.getClient().sendByte(GameUtils.GAME_VICTORY);
-								RevengeDialog.main(false, false);
-
-								closingForRevenge = true;
+								RevengeDialog.main(GameUtils.GameStatus.LOST, false, coordinates);
+								
+								if(!RevengeDialog.ok) {
+									dispose();
+									return;
+								}
+							}
+							/* check the draw */
+							if(isDraw()) {
+								GameManager.getClient().sendByte(GameUtils.GAME_DRAW);
+								RevengeDialog.main(GameUtils.GameStatus.DRAW, false, coordinates);
+								
+								if(!RevengeDialog.ok) {
+									dispose();
+									return;
+								}
+							}	
+							break;
+							
+						case GameUtils.GAME_DRAW:
+							RevengeDialog.main(GameUtils.GameStatus.DRAW, false, coordinates);
+							
+							if(!RevengeDialog.ok) {
 								dispose();
 								return;
 							}
 							break;
 							
 						case GameUtils.GAME_VICTORY:
-							RevengeDialog.main(true, false);
-							closingForRevenge = true;
-							return;
+							RevengeDialog.main(GameUtils.GameStatus.WON, false, coordinates);
+							
+							if(!RevengeDialog.ok) {
+								dispose();
+								return;
+							}
+							break;
 							
 						case GameUtils.EXIT_MESSAGE:
 							AlertClass.showMsgBox(null, "Game Info", GameManager.getNickServer() + " left the game ;/");
