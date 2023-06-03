@@ -66,6 +66,20 @@ public class GameUtils {
 
 	}
 	
+	public static ArrayList<ArrayList<String>> createMovesMatrix() {
+		ArrayList<ArrayList<String>> moves_ = new ArrayList<ArrayList<String>>(3);
+		
+        for (int i = 0; i < 3; i++) {
+            ArrayList<String> row = new ArrayList<>(3);
+            for (int j = 0; j < 3; j++) {
+                row.add(null);
+            }
+            moves_.add(row);
+        }
+        
+        return moves_;
+	}
+	
     public static ArrayList<Point> checkTrees(ArrayList<ArrayList<Character>> tab, int r, int m, Character who) {
     	ArrayList<Point> coords = checkRow(tab, r, who);
     	if (coords != null) {

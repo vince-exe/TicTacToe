@@ -54,6 +54,9 @@ public class ClientGame extends JDialog {
 	private static ClientGame dialog;
 	private static Thread threadClient;
 	private static ArrayList<Point> coordinates;
+	private static ArrayList<ArrayList<String>> moves;
+	
+	private static Point lastPoint;
 	
 	private JLabel playLabel_0_0;
 	private JLabel playLabel_1_0;
@@ -71,6 +74,7 @@ public class ClientGame extends JDialog {
 	private static boolean windowClosed;
 	private static boolean handleConnErr;
 	private static boolean updateChat;
+	private JLabel lblNewLabel;
 	
 	/**
 	 * Launch the application.
@@ -82,6 +86,9 @@ public class ClientGame extends JDialog {
 			updateChat = true;
 			
 			coordinates = new ArrayList<Point>();
+			moves = GameUtils.createMovesMatrix();
+			
+			lastPoint = new Point();
 			
 			dialog = new ClientGame();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -167,6 +174,20 @@ public class ClientGame extends JDialog {
 			   !playLabel_2_0.getText().isEmpty() && !playLabel_2_1.getText().isEmpty() && !playLabel_2_2.getText().isEmpty();
 	}
 	
+	public void saveMoves() {
+		moves.get(0).set(0, playLabel_0_0.getText());
+		moves.get(0).set(1, playLabel_0_1.getText());
+		moves.get(0).set(2, playLabel_0_2.getText());
+		
+		moves.get(1).set(0, playLabel_1_0.getText());
+		moves.get(1).set(1, playLabel_1_1.getText());
+		moves.get(1).set(2, playLabel_1_2.getText());
+		
+		moves.get(2).set(0, playLabel_2_0.getText());
+		moves.get(2).set(1, playLabel_2_1.getText());
+		moves.get(2).set(2, playLabel_2_2.getText());
+	}
+	
 	public void makeThingsVisible(boolean b) {
 		/* waiting label is gonna be always the opposite */
 		waitingLabel.setVisible(!b);
@@ -230,7 +251,7 @@ public class ClientGame extends JDialog {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ClientGame.class.getResource("/ui/resources/icon.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setAutoRequestFocus(false);
-		setBounds(100, 100, 580, 403);
+		setBounds(100, 100, 580, 417);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(new Color(15, 49, 66));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -399,9 +420,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(0, 0);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(0, 0, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_0_0.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -432,9 +456,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(1, 0);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(1, 0, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_1_0.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -465,9 +492,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(2, 0);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(2, 0, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_2_0.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -498,9 +528,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(2, 1);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(2, 1, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_2_1.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -531,9 +564,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(2, 2);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(2, 2, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_2_2.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -564,9 +600,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(1, 2);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(1, 2, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_1_2.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -597,9 +636,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(1, 1);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(1, 1, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_1_1.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -630,9 +672,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(0, 1);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(0, 1, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_0_1.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -663,9 +708,12 @@ public class ClientGame extends JDialog {
 					closeSocketAndWindow();
 					return;
 				}
+				lastPoint.set(0, 2);
+				
 				GameManager.setServerTurn();
-				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				GameManager.addToMatrix(0, 2, GameManager.getClientShape().charAt(0));
+				
+				GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, false);
 				playLabel_0_2.setText(GameManager.getClientShape());
 			}
 			@Override
@@ -695,16 +743,21 @@ public class ClientGame extends JDialog {
 		notificationLabel.setBounds(518, 94, 25, 25);
 		contentPanel.add(notificationLabel);
 		
+		lblNewLabel = new JLabel("Copyright © 2023 Vincenzo Caliendo. All rights reserved");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setForeground(new Color(193, 193, 193));
+		lblNewLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 10));
+		lblNewLabel.setBounds(95, 355, 267, 18);
+		contentPanel.add(lblNewLabel);
+		
 		/* Hide all the components */
 		makeThingsVisible(false);
 		/* start the thread to listen a client connection */
 		threadClient = new Thread() {
 			public void run() {
-				if(GameManager.isFirstTime()) {
-					if(!handleConnection()) {
-						closeSocketAndWindow();
-						return;
-					}
+				if(!handleConnection()) {
+					closeSocketAndWindow();
+					return;
 				}
 
 				try {
@@ -738,7 +791,7 @@ public class ClientGame extends JDialog {
 				
 				Byte bMsg;
 				String msg;
-				int row, col;
+				int row = 0, col = 0;
 				
 				/* listen messages */
 				while(true) {
@@ -763,9 +816,10 @@ public class ClientGame extends JDialog {
 							col = GameManager.getClient().readByte();
 							coordinates.clear();
 							
-							printRowAndCol(row, col, GameManager.getServerShape());
 							GameManager.addToMatrix(row, col, GameManager.getServerShape().charAt(0));
 							GameManager.setClientTurn();
+							
+							printRowAndCol(row, col, GameManager.getServerShape());
 							GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, true);
 							
 							coordinates = GameUtils.checkTrees(GameManager.getMatrix(), row, col, GameManager.getServerShape().charAt(0));
@@ -773,7 +827,9 @@ public class ClientGame extends JDialog {
 							/* check if the server has won */
 							if(!coordinates.isEmpty()) {
 								GameManager.getClient().sendByte(GameUtils.GAME_VICTORY);
-								RevengeDialog.main(GameUtils.GameStatus.LOST, false, coordinates);
+								
+								saveMoves();
+								RevengeDialog.main(GameUtils.GameStatus.LOST, false, coordinates, moves);
 								
 								if(!RevengeDialog.ok) {
 									dispose();
@@ -783,7 +839,9 @@ public class ClientGame extends JDialog {
 							/* check the draw */
 							if(isDraw()) {
 								GameManager.getClient().sendByte(GameUtils.GAME_DRAW);
-								RevengeDialog.main(GameUtils.GameStatus.DRAW, false, coordinates);
+								
+								saveMoves();
+								RevengeDialog.main(GameUtils.GameStatus.DRAW, false, coordinates, moves);
 								
 								if(!RevengeDialog.ok) {
 									dispose();
@@ -793,7 +851,8 @@ public class ClientGame extends JDialog {
 							break;
 							
 						case GameUtils.GAME_DRAW:
-							RevengeDialog.main(GameUtils.GameStatus.DRAW, false, coordinates);
+							saveMoves();
+							RevengeDialog.main(GameUtils.GameStatus.DRAW, false, coordinates, moves);
 							
 							if(!RevengeDialog.ok) {
 								dispose();
@@ -802,7 +861,11 @@ public class ClientGame extends JDialog {
 							break;
 							
 						case GameUtils.GAME_VICTORY:
-							RevengeDialog.main(GameUtils.GameStatus.WON, false, coordinates);
+							/* store the coordinates of my victory */
+							coordinates = GameUtils.checkTrees(GameManager.getMatrix(), lastPoint.first(), lastPoint.second(), GameManager.getClientShape().charAt(0));
+							
+							saveMoves();
+							RevengeDialog.main(GameUtils.GameStatus.WON, false, coordinates, moves);
 							
 							if(!RevengeDialog.ok) {
 								dispose();

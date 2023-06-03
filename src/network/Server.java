@@ -66,7 +66,7 @@ public class Server {
 		outputClient.flush();
 	}
 	
-	public void sendByte(Byte b) throws IOException {
+	public void sendByte(int b) throws IOException {
 		outputClient.writeByte(b);
 		outputClient.flush();
 	}
