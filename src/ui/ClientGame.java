@@ -34,6 +34,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.KeyAdapter;
 import javax.swing.JScrollPane;
 
@@ -95,54 +96,22 @@ public class ClientGame extends JDialog {
 			dialog.setModalityType(DEFAULT_MODALITY_TYPE);
 			dialog.setVisible(true);
 			
-			dialog.addWindowListener(new WindowListener() {
-				@Override
-				public void windowOpened(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void windowClosing(WindowEvent e) {
-					
-				}
-
+			dialog.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosed(WindowEvent e) {
-					if(!GameManager.getClient().isClosed() && !handleConnErr) {
-						try {
+					try {
+						if(!GameManager.getClient().isClosed() && !handleConnErr) {
 							windowClosed = true;
 							GameManager.getClient().sendByte(GameUtils.EXIT_MESSAGE);
 							dialog.closeSocketAndWindow();
-						} 
-						catch (IOException e1) {
-							dialog.closeSocketAndWindow();
 						}
 					}
-				}
-
-				@Override
-				public void windowIconified(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void windowDeiconified(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void windowActivated(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void windowDeactivated(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
+					catch(NullPointerException e2) {
+						
+					}
+					catch (IOException e1) {
+						dialog.closeSocketAndWindow();
+					}
 				}
 			});
 		} 

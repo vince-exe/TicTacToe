@@ -86,4 +86,15 @@ public class Server {
 	public DataOutputStream getDataOutputStream() {
 		return this.outputClient;
 	}
+	
+	public String closeServer() {
+		try {
+			this.server.close();
+			return "ok";
+			
+		} 
+		catch (IOException e) {
+			return e.getMessage();
+		}
+	}
 }

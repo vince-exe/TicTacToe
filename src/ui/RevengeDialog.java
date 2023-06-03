@@ -12,14 +12,19 @@ import java.util.ArrayList;
 import java.awt.Color;
 import javax.swing.JLabel;
 
+import utils.AlertClass;
 import utils.Colors;
 import utils.GameUtils;
 import main.GameManager;
 import main.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 @SuppressWarnings("serial")
 public class RevengeDialog extends JDialog {
@@ -30,6 +35,8 @@ public class RevengeDialog extends JDialog {
 	private static boolean isHosting;
 	private static ArrayList<Point> coordinates;
 	private static ArrayList<ArrayList<String>> trisPoints;
+	
+	private Thread listenThread;
 	
 	private JLabel row1, row2, row3, row4, enemyLabel;
 	
@@ -117,6 +124,16 @@ public class RevengeDialog extends JDialog {
 		}
 	}
 	
+	public void closeSocketAndWindow() {
+		if(isHosting) {
+			GameManager.getServer().shutdown();
+		}
+		else {
+			GameManager.getClient().shutdown();
+		}
+		ok = false;
+		dispose();
+	}
 	/**
 	 * Create the dialog.
 	 */
@@ -126,7 +143,23 @@ public class RevengeDialog extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-	
+				ok = false;
+				try {
+					if(isHosting && !GameManager.getServer().isClosed()) {
+						GameManager.getServer().sendByte(GameUtils.EXIT_MESSAGE);
+					}
+					else if(!GameManager.getClient().isClosed()){
+						GameManager.getClient().sendByte(GameUtils.EXIT_MESSAGE);
+					}
+				}
+				catch(IOException e1) {
+					if(isHosting) {
+						GameManager.getServer().shutdown();
+					}
+					else {
+						GameManager.getClient().shutdown();
+					}
+				}
 			}
 		});
 		setTitle("Tic-Tac-Toe");
@@ -209,6 +242,30 @@ public class RevengeDialog extends JDialog {
 		contentPanel.add(messageLabel);
 		
 		JButton revengeBtn = new JButton("Rivincita");
+		revengeBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					if(isHosting) {
+						GameManager.getServer().sendByte(GameUtils.REMATCH);
+					}
+					else {
+						GameManager.getServer().sendByte(GameUtils.REMATCH);
+					}
+				}
+				catch(IOException e1) {
+					closeSocketAndWindow();
+				}
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				revengeBtn.setBorder(new LineBorder(new Color(2, 21, 31), 4, true));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				revengeBtn.setBorder(new LineBorder(new Color(2, 21, 31), 3, true));
+			}
+		});
 		revengeBtn.setForeground(new Color(235, 235, 235));
 		revengeBtn.setFont(new Font("Comic Sans MS", Font.BOLD | Font.ITALIC, 18));
 		revengeBtn.setFocusPainted(false);
@@ -295,7 +352,7 @@ public class RevengeDialog extends JDialog {
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setForeground(new Color(193, 193, 193));
 		lblNewLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 10));
-		lblNewLabel.setBounds(125, 353, 267, 18);
+		lblNewLabel.setBounds(120, 353, 290, 18);
 		contentPanel.add(lblNewLabel);
 		
 		if(status == GameUtils.GameStatus.WON) {
@@ -329,5 +386,39 @@ public class RevengeDialog extends JDialog {
 		if(status != GameUtils.GameStatus.DRAW) {
 			setWinnerColors();
 		}
+		
+		listenThread = new Thread() {
+			public void run() {
+				byte msg = 0;
+				
+				while(true) {
+					try {
+						if(isHosting) {
+							msg = GameManager.getServer().readByte();
+						}
+						else {
+							msg = GameManager.getClient().readByte();
+						}
+						
+						switch (msg) {
+						case GameUtils.EXIT_MESSAGE:
+							if(isHosting) {
+								AlertClass.showMsgBox(null, "Game Info", GameManager.getNickClient() + " left the game :/");
+							}
+							else {
+								AlertClass.showMsgBox(null, "Game Info", GameManager.getNickServer() + " left the game :/");
+							}
+						}
+						dispose();
+						return;
+					}
+					catch(IOException e) {
+						closeSocketAndWindow();
+						return;
+					}
+				}
+			}
+		};
+		listenThread.start();
 	}
 }

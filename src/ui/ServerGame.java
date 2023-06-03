@@ -17,7 +17,6 @@ import utils.GameUtils;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -35,6 +34,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.MouseWheelEvent;
 
 public class ServerGame extends JDialog {
@@ -95,57 +95,24 @@ public class ServerGame extends JDialog {
 			dialog.setModalityType(DEFAULT_MODALITY_TYPE);
 			dialog.setVisible(true);
 					
-			dialog.addWindowListener(new WindowListener() {
-				@Override
-				public void windowOpened(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void windowClosing(WindowEvent e) {
-
-				}
-
+			dialog.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosed(WindowEvent e) {
-					if(!GameManager.getServer().isClosed() && !handleConnErr) {
-						try {
+					try {
+						if(!GameManager.getServer().isClosed() && !handleConnErr) {
 							windowClosed = true;
 							GameManager.getServer().sendByte(GameUtils.EXIT_MESSAGE);
 							dialog.closeSocketAndWindow();
-						} 
-						catch (IOException e1) {
-							dialog.closeSocketAndWindow();
 						}
 					}
-				}
-
-				@Override
-				public void windowIconified(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void windowDeiconified(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void windowActivated(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-
-				@Override
-				public void windowDeactivated(WindowEvent e) {
-					// TODO Auto-generated method stub
-					
+					catch(NullPointerException e2) {
+						GameManager.getServer().closeServer();
+					}
+					catch (IOException e1) {
+						dialog.closeSocketAndWindow();
+					}
 				}
 			});
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

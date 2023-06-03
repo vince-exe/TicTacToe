@@ -19,9 +19,11 @@ public class GameUtils {
 	public final static byte NORMAL_MESSAGE = 0;
 	public final static byte GAME_MESSAGE = 1;
 	public final static byte EXIT_MESSAGE = 2;
-	public final static byte GAME_DRAW = 3;
 	
-	public final static byte GAME_VICTORY = 10;
+	public final static byte GAME_DRAW = 3;
+	public final static byte GAME_VICTORY = 4;
+	
+	public final static byte REMATCH = 5;
 	
 	public enum GameStatus {
 		DRAW,
