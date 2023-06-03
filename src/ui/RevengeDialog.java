@@ -39,8 +39,10 @@ public class RevengeDialog extends JDialog {
 	private Thread listenThread;
 	
 	private JLabel row1, row2, row3, row4, enemyLabel;
+	private JButton revengeBtn, exitBtn;
 	
 	public static boolean ok;
+	public static boolean rematch;
 	
 	private JLabel titleLabel;
 	private JLabel youLabel;
@@ -61,6 +63,8 @@ public class RevengeDialog extends JDialog {
 	public static void main(GameUtils.GameStatus gameStatus, boolean isHosting_, ArrayList<Point> coordinates_, ArrayList<ArrayList<String>> trisPoints_) {
 		try {
 			ok = false;
+			rematch = false;
+			
 			status = gameStatus;
 			isHosting = isHosting_;
 			coordinates = coordinates_;
@@ -147,9 +151,11 @@ public class RevengeDialog extends JDialog {
 				try {
 					if(isHosting && !GameManager.getServer().isClosed()) {
 						GameManager.getServer().sendByte(GameUtils.EXIT_MESSAGE);
+						GameManager.getServer().shutdown();
 					}
 					else if(!GameManager.getClient().isClosed()){
 						GameManager.getClient().sendByte(GameUtils.EXIT_MESSAGE);
+						GameManager.getClient().shutdown();
 					}
 				}
 				catch(IOException e1) {
@@ -241,17 +247,12 @@ public class RevengeDialog extends JDialog {
 		messageLabel.setBounds(60, 257, 407, 28);
 		contentPanel.add(messageLabel);
 		
-		JButton revengeBtn = new JButton("Rivincita");
+		revengeBtn = new JButton("Rivincita");
 		revengeBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					if(isHosting) {
-						GameManager.getServer().sendByte(GameUtils.REMATCH);
-					}
-					else {
-						GameManager.getServer().sendByte(GameUtils.REMATCH);
-					}
+					/** TODO **/
 				}
 				catch(IOException e1) {
 					closeSocketAndWindow();
@@ -275,7 +276,24 @@ public class RevengeDialog extends JDialog {
 		revengeBtn.setBounds(87, 302, 129, 40);
 		contentPanel.add(revengeBtn);
 		
-		JButton exitBtn = new JButton("Abbandona");
+		exitBtn = new JButton("Abbandona");
+		exitBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(!rematch) {
+					dispose();
+					return;
+				}
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				exitBtn.setBorder(new LineBorder(new Color(2, 21, 31), 4, true));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				exitBtn.setBorder(new LineBorder(new Color(2, 21, 31), 3, true));
+			}
+		});
 		exitBtn.setForeground(new Color(235, 235, 235));
 		exitBtn.setFont(new Font("Comic Sans MS", Font.BOLD | Font.ITALIC, 18));
 		exitBtn.setFocusPainted(false);
@@ -408,9 +426,10 @@ public class RevengeDialog extends JDialog {
 							else {
 								AlertClass.showMsgBox(null, "Game Info", GameManager.getNickServer() + " left the game :/");
 							}
+							dispose();
+							return;
 						}
-						dispose();
-						return;
+						
 					}
 					catch(IOException e) {
 						closeSocketAndWindow();
