@@ -156,6 +156,12 @@ public class ClientGame extends JDialog {
 		moves.get(2).set(2, playLabel_2_2.getText());
 	}
 	
+	public void clearPlayLabels() {
+		playLabel_0_0.setText(""); playLabel_0_1.setText(""); playLabel_0_2.setText("");
+		playLabel_1_0.setText(""); playLabel_1_1.setText(""); playLabel_1_2.setText("");
+		playLabel_2_0.setText(""); playLabel_2_1.setText(""); playLabel_2_2.setText("");
+	}
+	
 	public void makeThingsVisible(boolean b) {
 		/* waiting label is gonna be always the opposite */
 		waitingLabel.setVisible(!b);
@@ -207,6 +213,50 @@ public class ClientGame extends JDialog {
 			else {
 				playLabel_2_2.setText(text);
 			}
+		}
+	}
+	
+	public void resetGame() {
+		try {
+			GameManager.clearMatrix();
+			GameManager.initMatrix();
+			
+			moves = null;
+			moves = GameUtils.createMovesMatrix();
+			
+			updateChat = true;
+			chatBox.setCaretPosition(chatBox.getDocument().getLength());
+			notificationLabel.setVisible(false);
+			msgBox.setText("Send a message");
+			
+			/* get the shape of the client */
+			GameManager.setClientShape(GameManager.getClient().read());
+			
+			if(GameManager.getClientShape().equals("O")) {
+				GameManager.setServerShape("X");
+			}
+			else {
+				GameManager.setServerShape("O");
+			}
+			
+			/* get the turn */
+			if(GameManager.getClient().read().equals("client")) {
+				GameManager.setClientTurn();
+			}
+			else {
+				GameManager.setServerTurn();
+			}
+			
+			System.out.print("\n[client] immagine: " + GameManager.getClientShape());
+			System.out.print("[client] turno: " + GameManager.getTurn());
+			
+			GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, GameManager.isClientTurn());
+			clearPlayLabels();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			utils.AlertClass.showErrBox(null, "Connection Error", e.getMessage());
+			closeSocketAndWindow();
 		}
 	}
 	
@@ -715,7 +765,7 @@ public class ClientGame extends JDialog {
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setForeground(new Color(193, 193, 193));
 		lblNewLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 10));
-		lblNewLabel.setBounds(95, 355, 267, 18);
+		lblNewLabel.setBounds(95, 355, 291, 18);
 		contentPanel.add(lblNewLabel);
 		
 		/* Hide all the components */
@@ -765,7 +815,7 @@ public class ClientGame extends JDialog {
 				while(true) {
 					try {
 						bMsg = GameManager.getClient().readByte();
-						
+
 						switch(bMsg) {
 						case GameUtils.NORMAL_MESSAGE:
 							msg = GameManager.getClient().read();
@@ -804,7 +854,7 @@ public class ClientGame extends JDialog {
 									return;
 								}
 								else {
-									System.out.print("[ client ]: rivincita!!");
+									resetGame();
 								}
 							}
 							/* check the draw */
@@ -819,7 +869,7 @@ public class ClientGame extends JDialog {
 									return;
 								}
 								else {
-									System.out.print("[ client ]: rivincita!!");
+									resetGame();
 								}
 							}	
 							break;
@@ -833,7 +883,7 @@ public class ClientGame extends JDialog {
 								return;
 							}
 							else {
-								System.out.print("[ client ]: rivincita!!");
+								resetGame();
 							}
 							break;
 							
@@ -849,7 +899,7 @@ public class ClientGame extends JDialog {
 								return;
 							}
 							else {
-								System.out.print("[ client ]: rivincita!!");
+								resetGame();
 							}
 							break;
 							
@@ -859,10 +909,12 @@ public class ClientGame extends JDialog {
 							return;
 							
 						default:
+							System.out.print("default");
 							break;
 						}
 					} 
 					catch (IOException e) {
+						e.printStackTrace();
 						if(windowClosed) {
 							closeSocketAndWindow();
 							return;

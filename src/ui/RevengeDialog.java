@@ -148,6 +148,7 @@ public class RevengeDialog extends JDialog {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				if(!ok) {
+					System.out.print("chiuso qualcosa");
 					try {
 						if(isHosting) {
 							if(!GameManager.getServer().isClosed()) {

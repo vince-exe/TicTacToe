@@ -141,6 +141,12 @@ public class ServerGame extends JDialog {
 			   !playLabel2_0.getText().isEmpty() && !playLabel2_1.getText().isEmpty() && !playLabel2_2.getText().isEmpty();
 	}
 	
+	public void clearPlayLabels() {
+		playLabel0.setText("");; playLabel0_1.setText(""); playLabel0_2.setText("");
+		playLabel1_0.setText(""); playLabel1_1.setText(""); playLabel1_2.setText("");
+		playLabel2_0.setText(""); playLabel2_1.setText(""); playLabel2_2.setText("");
+	}
+	
 	public void saveMoves() {
 		moves.get(0).set(0, playLabel0.getText());
 		moves.get(0).set(1, playLabel0_1.getText());
@@ -206,6 +212,42 @@ public class ServerGame extends JDialog {
 			else {
 				playLabel2_2.setText(text);
 			}
+		}
+	}
+	
+	public void resetGame() {
+		try {
+			GameManager.initShapes();
+			
+			GameManager.setNoFirstTime();
+			GameUtils.setTurn();
+			
+			GameManager.clearMatrix();
+			GameManager.initMatrix();
+			
+			moves = null;
+			moves = GameUtils.createMovesMatrix();
+			
+			updateChat = true;
+			chatBox.setCaretPosition(chatBox.getDocument().getLength());
+			notificationLabel.setVisible(false);
+			msgBox.setText("Send a message");
+			
+			/* send the shape to the client */
+			GameManager.getServer().send(GameManager.getClientShape());
+			/* send the turn */
+			GameManager.getServer().send(GameManager.getTurn());
+			
+			System.out.print("\n[server] immagine: " + GameManager.getServerShape());
+			System.out.print("[server] turno: " + GameManager.getTurn());
+			
+			GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, GameManager.isServerTurn());
+			clearPlayLabels();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			utils.AlertClass.showErrBox(null, "Connection Error", e.getMessage());
+			closeSocketAndWindow();
 		}
 	}
 	
@@ -731,7 +773,7 @@ public class ServerGame extends JDialog {
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setForeground(new Color(193, 193, 193));
 		lblNewLabel.setFont(new Font("Comic Sans MS", Font.PLAIN, 10));
-		lblNewLabel.setBounds(95, 355, 267, 18);
+		lblNewLabel.setBounds(95, 355, 291, 18);
 		contentPanel.add(lblNewLabel);
 		
 		/* Hide all the components */
@@ -814,7 +856,7 @@ public class ServerGame extends JDialog {
 									return;
 								}
 								else {
-									System.out.print("[ server ]: rivincita!!");
+									resetGame();
 								}
 							}
 							/* check the draw */
@@ -829,7 +871,7 @@ public class ServerGame extends JDialog {
 									return;
 								}
 								else {
-									System.out.print("[ server ]: rivincita!!");
+									resetGame();
 								}
 							}	
 							break;
@@ -843,7 +885,7 @@ public class ServerGame extends JDialog {
 								return;
 							}
 							else {
-								System.out.print("[ server ]: rivincita!!");
+								resetGame();
 							}
 							break;
 							
@@ -859,7 +901,7 @@ public class ServerGame extends JDialog {
 								return;
 							}
 							else {
-								System.out.print("[ server ]: rivincita!!");
+								resetGame();
 							}
 							break;
 							
@@ -869,10 +911,12 @@ public class ServerGame extends JDialog {
 							return;
 							
 						default:
+							System.out.print("default");
 							break;
 						}
 					} 
 					catch (IOException e) {
+						e.printStackTrace();
 						if(windowClosed) {
 							closeSocketAndWindow();
 							return;

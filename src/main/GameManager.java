@@ -43,6 +43,10 @@ public class GameManager {
 		return firstTime;
 	}
 	
+	public static void setNoFirstTime() {
+		firstTime = false;
+	}
+	
 	public static void setServerTurn() {
 		playerTurn = "server";
 	}
@@ -97,10 +101,10 @@ public class GameManager {
 	}
 	
 	public static void clearMatrix() {
-		if(matrix != null) {
-			matrix = null;
-			matrix.clear();
+		for(int i = 0; i < 3; i++) {
+			matrix.get(i).clear();
 		}
+		matrix.clear();
 	}
 	
 	public static ArrayList<ArrayList<Character>> getMatrix() {
