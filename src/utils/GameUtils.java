@@ -25,6 +25,7 @@ public class GameUtils {
 	
 	public final static byte REMATCH = 5;
 	public final static byte CONFIRM_REMATCH = 6;
+	public final static byte REMATCH_REFEUSED = 7;
 	
 	public enum GameStatus {
 		DRAW,

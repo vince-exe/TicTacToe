@@ -813,6 +813,9 @@ public class ServerGame extends JDialog {
 									dispose();
 									return;
 								}
+								else {
+									System.out.print("[ server ]: rivincita!!");
+								}
 							}
 							/* check the draw */
 							if(isDraw()) {
@@ -825,6 +828,9 @@ public class ServerGame extends JDialog {
 									dispose();
 									return;
 								}
+								else {
+									System.out.print("[ server ]: rivincita!!");
+								}
 							}	
 							break;
 							
@@ -835,6 +841,9 @@ public class ServerGame extends JDialog {
 							if(!RevengeDialog.ok) {
 								dispose();
 								return;
+							}
+							else {
+								System.out.print("[ server ]: rivincita!!");
 							}
 							break;
 							
@@ -848,6 +857,9 @@ public class ServerGame extends JDialog {
 							if(!RevengeDialog.ok) {
 								dispose();
 								return;
+							}
+							else {
+								System.out.print("[ server ]: rivincita!!");
 							}
 							break;
 							

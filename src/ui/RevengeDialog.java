@@ -42,7 +42,7 @@ public class RevengeDialog extends JDialog {
 	private JButton revengeBtn, exitBtn;
 	
 	public static boolean ok;
-	public static boolean rematch;
+	public static boolean rematchRequested;
 	
 	private JLabel titleLabel;
 	private JLabel youLabel;
@@ -63,7 +63,7 @@ public class RevengeDialog extends JDialog {
 	public static void main(GameUtils.GameStatus gameStatus, boolean isHosting_, ArrayList<Point> coordinates_, ArrayList<ArrayList<String>> trisPoints_) {
 		try {
 			ok = false;
-			rematch = false;
+			rematchRequested = false;
 			
 			status = gameStatus;
 			isHosting = isHosting_;
@@ -147,23 +147,28 @@ public class RevengeDialog extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				ok = false;
-				try {
-					if(isHosting && !GameManager.getServer().isClosed()) {
-						GameManager.getServer().sendByte(GameUtils.EXIT_MESSAGE);
-						GameManager.getServer().shutdown();
+				if(!ok) {
+					try {
+						if(isHosting) {
+							if(!GameManager.getServer().isClosed()) {
+								GameManager.getServer().sendByte(GameUtils.EXIT_MESSAGE);
+								GameManager.getServer().shutdown();
+							}
+						}
+						else {
+							if(!GameManager.getClient().isClosed()){
+								GameManager.getClient().sendByte(GameUtils.EXIT_MESSAGE);
+								GameManager.getClient().shutdown();
+							}
+						}
 					}
-					else if(!GameManager.getClient().isClosed()){
-						GameManager.getClient().sendByte(GameUtils.EXIT_MESSAGE);
-						GameManager.getClient().shutdown();
-					}
-				}
-				catch(IOException e1) {
-					if(isHosting) {
-						GameManager.getServer().shutdown();
-					}
-					else {
-						GameManager.getClient().shutdown();
+					catch(Exception e1) {
+						if(isHosting) {
+							GameManager.getServer().shutdown();
+						}
+						else {
+							GameManager.getClient().shutdown();
+						}
 					}
 				}
 			}
@@ -252,7 +257,25 @@ public class RevengeDialog extends JDialog {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					/** TODO **/
+					if(rematchRequested) {
+						if(isHosting) {
+							GameManager.getServer().sendByte(GameUtils.CONFIRM_REMATCH);
+						}
+						else {
+							GameManager.getClient().sendByte(GameUtils.CONFIRM_REMATCH);
+						}
+						ok = true;
+						dispose();
+					}
+					else {
+						if(isHosting) {
+							GameManager.getServer().sendByte(GameUtils.REMATCH);
+						}
+						else {
+							GameManager.getClient().sendByte(GameUtils.REMATCH);
+						}
+						messageLabel.setText("Richiesta di rivincita inviata... In attesa di una risposta!");
+					}
 				}
 				catch(IOException e1) {
 					closeSocketAndWindow();
@@ -280,9 +303,24 @@ public class RevengeDialog extends JDialog {
 		exitBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(!rematch) {
-					dispose();
-					return;
+				try {
+					if(rematchRequested) {
+						if(isHosting) {
+							GameManager.getServer().sendByte(GameUtils.REMATCH_REFEUSED);
+						}
+						else {
+							GameManager.getClient().sendByte(GameUtils.REMATCH_REFEUSED);
+						}
+						utils.AlertClass.showMsgBox(null, "Rivincita Rifiutata", "Richiesta di rivincita rifiutata");
+						closeSocketAndWindow();
+					}
+					else {
+						dispose();
+						return;
+					}
+				}
+				catch(Exception e1) {
+					closeSocketAndWindow();
 				}
 			}
 			@Override
@@ -428,8 +466,29 @@ public class RevengeDialog extends JDialog {
 							}
 							dispose();
 							return;
-						}
 						
+						case GameUtils.REMATCH:
+							messageLabel.setText("Hai una richiesta di rivincita... Cosa aspetti accetta!");
+							revengeBtn.setText("Accetta");
+							exitBtn.setText("Rifiuta");
+							rematchRequested = true;
+							break;
+							
+						case GameUtils.REMATCH_REFEUSED:
+							if(isHosting) {
+								utils.AlertClass.showMsgBox(null, "Rivincita Rifiutata", GameManager.getNickClient() + " ha rifiutato la tua richiesta di rivincita");
+							}
+							else {
+								utils.AlertClass.showMsgBox(null, "Rivincita Rifiutata", GameManager.getNickServer() + " ha rifiutato la tua richiesta di rivincita");
+							}
+							closeSocketAndWindow();
+							return;
+							
+						case GameUtils.CONFIRM_REMATCH:
+							ok = true;
+							dispose();
+							return;
+						}
 					}
 					catch(IOException e) {
 						closeSocketAndWindow();

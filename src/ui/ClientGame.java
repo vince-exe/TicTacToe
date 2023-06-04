@@ -17,7 +17,6 @@ import utils.GameUtils;
 
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.Color;
@@ -804,6 +803,9 @@ public class ClientGame extends JDialog {
 									dispose();
 									return;
 								}
+								else {
+									System.out.print("[ client ]: rivincita!!");
+								}
 							}
 							/* check the draw */
 							if(isDraw()) {
@@ -816,6 +818,9 @@ public class ClientGame extends JDialog {
 									dispose();
 									return;
 								}
+								else {
+									System.out.print("[ client ]: rivincita!!");
+								}
 							}	
 							break;
 							
@@ -826,6 +831,9 @@ public class ClientGame extends JDialog {
 							if(!RevengeDialog.ok) {
 								dispose();
 								return;
+							}
+							else {
+								System.out.print("[ client ]: rivincita!!");
 							}
 							break;
 							
@@ -839,6 +847,9 @@ public class ClientGame extends JDialog {
 							if(!RevengeDialog.ok) {
 								dispose();
 								return;
+							}
+							else {
+								System.out.print("[ client ]: rivincita!!");
 							}
 							break;
 							
