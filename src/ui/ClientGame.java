@@ -221,39 +221,18 @@ public class ClientGame extends JDialog {
 	}
 	
 	public void resetGame() {
-		GameManager.clearMatrix();
-		GameManager.initMatrix();
-			
-		moves = null;
-		moves = GameUtils.createMovesMatrix();
-			
-		updateChat = true;
-		chatBox.setCaretPosition(chatBox.getDocument().getLength());
-		notificationLabel.setVisible(false);
-		msgBox.setText("Send a message");
-		
 		try {
-			if(GameManager.getClient().readByte() == GameUtils.CONFIGS) {
-				int turn  = GameManager.getClient().readByte();
-				
-				if(turn == GameUtils.SERVER_TURN) {
-					GameManager.setServerTurn();
-				}
-				else {
-					GameManager.setClientTurn();
-				}
+			if(!handleConnection()) {
+				closeSocketAndWindow();
+				return;
 			}
-		}
-		catch(Exception e) {
+			
+			
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
-			utils.AlertClass.showErrBox(null, "Connection Error", e.getMessage());
-			closeSocketAndWindow();
 		}
-		
-		GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, GameManager.isClientTurn());
-		clearPlayLabels();	
 	}
-	
 	/**
 	 * Create the dialog.
 	 */
@@ -810,7 +789,7 @@ public class ClientGame extends JDialog {
 				while(true) {
 					try {
 						bMsg = GameManager.getClient().readByte();
-
+						System.out.print("\n[ client ]: Byte Arrivato");
 						switch(bMsg) {
 						case GameUtils.NORMAL_MESSAGE:
 							msg = GameManager.getClient().read();
@@ -877,9 +856,8 @@ public class ClientGame extends JDialog {
 								dispose();
 								return;
 							}
-							else {
-								resetGame();
-							}
+							resetGame();
+							
 							break;
 							
 						case GameUtils.GAME_VICTORY:
@@ -893,9 +871,8 @@ public class ClientGame extends JDialog {
 								dispose();
 								return;
 							}
-							else {
-								resetGame();
-							}
+							resetGame();
+							
 							break;
 							
 						case GameUtils.EXIT_MESSAGE:
@@ -904,11 +881,11 @@ public class ClientGame extends JDialog {
 							return;
 							
 						default:
-							System.out.print("default");
+							System.out.print("\nDefault: " + bMsg);
 							break;
 						}
 					} 
-					catch (IOException e) {
+					catch (Exception e) {
 						e.printStackTrace();
 						if(windowClosed) {
 							closeSocketAndWindow();

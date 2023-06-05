@@ -217,37 +217,13 @@ public class ServerGame extends JDialog {
 	
 	public void resetGame() {
 		try {
-			//GameManager.initShapes();
-			GameManager.getServer().getDataOutputStream().flush();
-			GameManager.setNoFirstTime();
-			GameUtils.setTurn();
-			
-			GameManager.clearMatrix();
-			GameManager.initMatrix();
-			
-			moves = null;
-			moves = GameUtils.createMovesMatrix();
-			
-			updateChat = true;
-			chatBox.setCaretPosition(chatBox.getDocument().getLength());
-			notificationLabel.setVisible(false);
-			msgBox.setText("Send a message");
-			
-			GameManager.getServer().sendByte(GameUtils.CONFIGS);
-			if(GameManager.getTurn().equals("server")) {
-				GameManager.getServer().sendByte(GameUtils.SERVER_TURN);
+			if(!handleConnection()) {
+				closeSocketAndWindow();
+				return;
 			}
-			else {
-				GameManager.getServer().sendByte(GameUtils.CLIENT_TURN);
-			}
-			
-			GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, GameManager.isServerTurn());
-			clearPlayLabels();
-		}
-		catch(Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace();
-			utils.AlertClass.showErrBox(null, "Connection Error", e.getMessage());
-			closeSocketAndWindow();
 		}
 	}
 	
@@ -818,7 +794,7 @@ public class ServerGame extends JDialog {
 				while(true) {
 					try {
 						bMsg = GameManager.getServer().readByte();
-						
+						System.out.print("\n[ server ]: Byte Arrivato");
 						switch(bMsg) {
 						case GameUtils.NORMAL_MESSAGE:
 							msg = GameManager.getServer().read();
@@ -886,9 +862,8 @@ public class ServerGame extends JDialog {
 								dispose();
 								return;
 							}
-							else {
-								resetGame();
-							}
+							resetGame();
+							
 							break;
 							
 						case GameUtils.GAME_VICTORY:
@@ -902,9 +877,8 @@ public class ServerGame extends JDialog {
 								dispose();
 								return;
 							}
-							else {
-								resetGame();
-							}
+							resetGame();
+						
 							break;
 							
 						case GameUtils.EXIT_MESSAGE:
@@ -913,11 +887,11 @@ public class ServerGame extends JDialog {
 							return;
 							
 						default:
-							System.out.print("default");
+							System.out.print("\nDefault: " + bMsg);
 							break;
 						}
 					} 
-					catch (IOException e) {
+					catch (Exception e) {
 						e.printStackTrace();
 						if(windowClosed) {
 							closeSocketAndWindow();

@@ -76,7 +76,7 @@ public class Server {
 	}
 	
 	public String read() throws IOException {
-		return inputClient.readUTF();
+		return inputClient.readUTF();	
 	}
 	
 	public boolean isClosed() {
@@ -85,6 +85,18 @@ public class Server {
 	
 	public DataOutputStream getDataOutputStream() {
 		return this.outputClient;
+	}
+	
+	public DataInputStream getDataInputStream() {
+		return this.inputClient;
+	}
+	
+	public void openDataInputStream() throws IOException {
+		inputClient = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
+	}
+	
+	public void opendataOutputStream() throws IOException {
+		outputClient = new DataOutputStream(socket.getOutputStream());
 	}
 	
 	public String closeServer() {

@@ -81,4 +81,16 @@ public class Client {
 	public DataOutputStream getDataOutputStream() {
 		return this.outputServer;
 	}
+	
+	public DataInputStream getDataInputStream() {
+		return this.inputServer;
+	}
+	
+	public void openDataInputStream() throws IOException {
+		inputServer = new DataInputStream(new BufferedInputStream(socket.getInputStream())); 
+	}
+	
+	public void opendataOutputStream() throws IOException {
+		outputServer = new DataOutputStream(socket.getOutputStream());
+	}
 }

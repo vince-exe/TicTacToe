@@ -16,20 +16,18 @@ public class GameUtils {
 	
 	public final static int MAX_LEN_MESSAGE_BOX = 35;
 	
-	public final static byte NORMAL_MESSAGE = 0;
-	public final static byte GAME_MESSAGE = 1;
-	public final static byte EXIT_MESSAGE = 2;
+	public final static byte NORMAL_MESSAGE = 50;
+	public final static byte GAME_MESSAGE = 60;
+	public final static byte EXIT_MESSAGE = 70;
 	
-	public final static byte GAME_DRAW = 3;
-	public final static byte GAME_VICTORY = 4;
+	public final static byte GAME_DRAW = 80;
+	public final static byte GAME_VICTORY = 90;
 	
-	public final static byte REMATCH = 5;
-	public final static byte CONFIRM_REMATCH = 6;
-	public final static byte REMATCH_REFEUSED = 7;
+	public final static byte REMATCH = 91;
+	public final static byte CONFIRM_REMATCH = 92;
+	public final static byte REMATCH_REFEUSED = 93;
 	
-	public final static byte CONFIGS = 50;
-	public final static byte SERVER_TURN = 55;
-	public final static byte CLIENT_TURN = 56;
+	public final static byte TEST = 94;
 	
 	public enum GameStatus {
 		DRAW,
