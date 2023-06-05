@@ -217,8 +217,8 @@ public class ServerGame extends JDialog {
 	
 	public void resetGame() {
 		try {
-			GameManager.initShapes();
-			
+			//GameManager.initShapes();
+			GameManager.getServer().getDataOutputStream().flush();
 			GameManager.setNoFirstTime();
 			GameUtils.setTurn();
 			
@@ -233,13 +233,13 @@ public class ServerGame extends JDialog {
 			notificationLabel.setVisible(false);
 			msgBox.setText("Send a message");
 			
-			/* send the shape to the client */
-			GameManager.getServer().send(GameManager.getClientShape());
-			/* send the turn */
-			GameManager.getServer().send(GameManager.getTurn());
-			
-			System.out.print("\n[server] immagine: " + GameManager.getServerShape());
-			System.out.print("[server] turno: " + GameManager.getTurn());
+			GameManager.getServer().sendByte(GameUtils.CONFIGS);
+			if(GameManager.getTurn().equals("server")) {
+				GameManager.getServer().sendByte(GameUtils.SERVER_TURN);
+			}
+			else {
+				GameManager.getServer().sendByte(GameUtils.CLIENT_TURN);
+			}
 			
 			GameUtils.setTurnColors(lblNewLabel_1, nickClientLabel, GameManager.isServerTurn());
 			clearPlayLabels();
@@ -379,7 +379,8 @@ public class ServerGame extends JDialog {
 						notificationLabel.setVisible(false);
 						msgBox.setText("");
 					} 
-					catch (IOException e1) {
+					catch (Exception e1) {
+						e1.printStackTrace();
 						AlertClass.showErrBox(null, "Connection Error", "An error occured while trying to send a message. Pleasy retry");
 						return;
 					}
@@ -857,6 +858,7 @@ public class ServerGame extends JDialog {
 								}
 								else {
 									resetGame();
+									break;
 								}
 							}
 							/* check the draw */

@@ -30,7 +30,6 @@ public class Server {
 	} 
 	
 	public String shutdown() {	
-		System.out.print("\nserver chiuso");
 		try {
 			if(inputClient != null) {
 				inputClient.close();

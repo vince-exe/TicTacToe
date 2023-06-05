@@ -27,6 +27,10 @@ public class GameUtils {
 	public final static byte CONFIRM_REMATCH = 6;
 	public final static byte REMATCH_REFEUSED = 7;
 	
+	public final static byte CONFIGS = 50;
+	public final static byte SERVER_TURN = 55;
+	public final static byte CLIENT_TURN = 56;
+	
 	public enum GameStatus {
 		DRAW,
 		WON,
@@ -46,12 +50,15 @@ public class GameUtils {
 	
 	public static void setTurn() {
 		if(GameManager.isFirstTime()) {
+			System.out.print("\nprima volta!");
 			GameManager.randomAssignTurn();
 		}
 		else if(GameManager.isClientTurn()) {
+			System.out.print("\ntoccava a client ora tocca a server");
 			GameManager.setServerTurn();
 		}
 		else {
+			System.out.print("\ntoccava a server ora tocca a client");
 			GameManager.setClientTurn();
 		}
 	}

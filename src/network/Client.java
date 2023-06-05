@@ -31,7 +31,6 @@ public class Client {
 	}
 	
 	public String shutdown()  {
-		System.out.print("\nclient chiuso");
 		try {
 			if(inputServer != null) {
 				inputServer.close();

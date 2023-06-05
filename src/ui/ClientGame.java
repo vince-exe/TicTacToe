@@ -216,48 +216,42 @@ public class ClientGame extends JDialog {
 		}
 	}
 	
+	public void config() {
+		
+	}
+	
 	public void resetGame() {
+		GameManager.clearMatrix();
+		GameManager.initMatrix();
+			
+		moves = null;
+		moves = GameUtils.createMovesMatrix();
+			
+		updateChat = true;
+		chatBox.setCaretPosition(chatBox.getDocument().getLength());
+		notificationLabel.setVisible(false);
+		msgBox.setText("Send a message");
+		
 		try {
-			GameManager.clearMatrix();
-			GameManager.initMatrix();
-			
-			moves = null;
-			moves = GameUtils.createMovesMatrix();
-			
-			updateChat = true;
-			chatBox.setCaretPosition(chatBox.getDocument().getLength());
-			notificationLabel.setVisible(false);
-			msgBox.setText("Send a message");
-			
-			/* get the shape of the client */
-			GameManager.setClientShape(GameManager.getClient().read());
-			
-			if(GameManager.getClientShape().equals("O")) {
-				GameManager.setServerShape("X");
+			if(GameManager.getClient().readByte() == GameUtils.CONFIGS) {
+				int turn  = GameManager.getClient().readByte();
+				
+				if(turn == GameUtils.SERVER_TURN) {
+					GameManager.setServerTurn();
+				}
+				else {
+					GameManager.setClientTurn();
+				}
 			}
-			else {
-				GameManager.setServerShape("O");
-			}
-			
-			/* get the turn */
-			if(GameManager.getClient().read().equals("client")) {
-				GameManager.setClientTurn();
-			}
-			else {
-				GameManager.setServerTurn();
-			}
-			
-			System.out.print("\n[client] immagine: " + GameManager.getClientShape());
-			System.out.print("[client] turno: " + GameManager.getTurn());
-			
-			GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, GameManager.isClientTurn());
-			clearPlayLabels();
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			utils.AlertClass.showErrBox(null, "Connection Error", e.getMessage());
 			closeSocketAndWindow();
 		}
+		
+		GameUtils.setTurnColors(lblNewLabel_1, nickServerLabel, GameManager.isClientTurn());
+		clearPlayLabels();	
 	}
 	
 	/**
@@ -350,7 +344,8 @@ public class ClientGame extends JDialog {
 						notificationLabel.setVisible(false);
 						msgBox.setText("");
 					} 
-					catch (IOException e1) {
+					catch (Exception e1) {
+						e1.printStackTrace();
 						AlertClass.showErrBox(null, "Connection Error", "An error occured while trying to send a message. Pleasy retry");
 						return;
 					}
