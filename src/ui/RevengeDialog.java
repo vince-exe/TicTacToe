@@ -36,7 +36,7 @@ public class RevengeDialog extends JDialog {
 	private static ArrayList<Point> coordinates;
 	private static ArrayList<ArrayList<String>> trisPoints;
 	
-	private Thread listenThread;
+	public static Thread listenThread;
 	
 	private JLabel row1, row2, row3, row4, enemyLabel;
 	private JButton revengeBtn, exitBtn;
@@ -147,15 +147,7 @@ public class RevengeDialog extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				if(ok) {
-					if(isHosting) {
-						GameManager.getServer().shutdown();
-					}
-					else {
-						GameManager.getClient().shutdown();
-					}
-				}
-				else {
+				if(!ok) {
 					try {
 						if(isHosting) {
 							if(!GameManager.getServer().isClosed()) {

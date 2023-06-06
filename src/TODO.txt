@@ -1,8 +1,7 @@
 **PRIORITA**
 
-**ORDINE IMPLEMENTAZIONE** 
--fine tempo ( quando si finisce il tempo )
+fare che quando la rivincita viene effettuata correttamente:
+-chiudere i sockets
+-chiudere la finestra di gioco
+-aprire la finestra di ip e port con lo stesso ip e port messo all'inizio della partita
 
-**LAVORANDO A**:
--pareggio / vittoria / sconfitta
--revenge dialog

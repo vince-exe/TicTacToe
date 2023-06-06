@@ -216,18 +216,11 @@ public class ClientGame extends JDialog {
 		}
 	}
 	
-	public void config() {
-		
-	}
-	
 	public void resetGame() {
 		try {
-			if(!handleConnection()) {
-				closeSocketAndWindow();
-				return;
+			if(RevengeDialog.listenThread.isAlive()) {
+				RevengeDialog.listenThread.interrupt();
 			}
-			
-			
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
@@ -317,7 +310,7 @@ public class ClientGame extends JDialog {
 						
 						GameManager.getClient().sendByte(GameUtils.NORMAL_MESSAGE);
 						GameManager.getClient().send(msgBox.getText());
-						
+						System.out.print("\nMessage Sent Client: " + msgBox.getText());
 						chatBox.append(" [You]: " + msgBox.getText() + "\n");
 						chatBox.setCaretPosition(chatBox.getDocument().getLength());
 						notificationLabel.setVisible(false);
@@ -789,7 +782,7 @@ public class ClientGame extends JDialog {
 				while(true) {
 					try {
 						bMsg = GameManager.getClient().readByte();
-						System.out.print("\n[ client ]: Byte Arrivato");
+					
 						switch(bMsg) {
 						case GameUtils.NORMAL_MESSAGE:
 							msg = GameManager.getClient().read();
@@ -829,6 +822,7 @@ public class ClientGame extends JDialog {
 								}
 								else {
 									resetGame();
+									break;
 								}
 							}
 							/* check the draw */

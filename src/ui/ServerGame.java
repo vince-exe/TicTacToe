@@ -217,9 +217,8 @@ public class ServerGame extends JDialog {
 	
 	public void resetGame() {
 		try {
-			if(!handleConnection()) {
-				closeSocketAndWindow();
-				return;
+			if(RevengeDialog.listenThread.isAlive()) {
+				RevengeDialog.listenThread.interrupt();
 			}
 		} 
 		catch (Exception e) {
@@ -349,7 +348,7 @@ public class ServerGame extends JDialog {
 						
 						GameManager.getServer().sendByte(GameUtils.NORMAL_MESSAGE);
 						GameManager.getServer().send(msgBox.getText());
-						
+						System.out.print("\nMessage Sent Server: " + msgBox.getText());
 						chatBox.append(" [You]: " + msgBox.getText() + "\n");
 						chatBox.setCaretPosition(chatBox.getDocument().getLength());
 						notificationLabel.setVisible(false);
@@ -794,7 +793,7 @@ public class ServerGame extends JDialog {
 				while(true) {
 					try {
 						bMsg = GameManager.getServer().readByte();
-						System.out.print("\n[ server ]: Byte Arrivato");
+		
 						switch(bMsg) {
 						case GameUtils.NORMAL_MESSAGE:
 							msg = GameManager.getServer().read();
