@@ -215,17 +215,7 @@ public class ClientGame extends JDialog {
 			}
 		}
 	}
-	
-	public void resetGame() {
-		try {
-			if(RevengeDialog.listenThread.isAlive()) {
-				RevengeDialog.listenThread.interrupt();
-			}
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 	/**
 	 * Create the dialog.
 	 */
@@ -310,7 +300,7 @@ public class ClientGame extends JDialog {
 						
 						GameManager.getClient().sendByte(GameUtils.NORMAL_MESSAGE);
 						GameManager.getClient().send(msgBox.getText());
-						System.out.print("\nMessage Sent Client: " + msgBox.getText());
+						
 						chatBox.append(" [You]: " + msgBox.getText() + "\n");
 						chatBox.setCaretPosition(chatBox.getDocument().getLength());
 						notificationLabel.setVisible(false);
@@ -815,15 +805,8 @@ public class ClientGame extends JDialog {
 								
 								saveMoves();
 								RevengeDialog.main(GameUtils.GameStatus.LOST, false, coordinates, moves);
-								
-								if(!RevengeDialog.ok) {
-									dispose();
-									return;
-								}
-								else {
-									resetGame();
-									break;
-								}
+								dispose();
+								return;
 							}
 							/* check the draw */
 							if(isDraw()) {
@@ -831,28 +814,16 @@ public class ClientGame extends JDialog {
 								
 								saveMoves();
 								RevengeDialog.main(GameUtils.GameStatus.DRAW, false, coordinates, moves);
-								
-								if(!RevengeDialog.ok) {
-									dispose();
-									return;
-								}
-								else {
-									resetGame();
-								}
+								dispose();
+								return;
 							}	
 							break;
 							
 						case GameUtils.GAME_DRAW:
 							saveMoves();
 							RevengeDialog.main(GameUtils.GameStatus.DRAW, false, coordinates, moves);
-							
-							if(!RevengeDialog.ok) {
-								dispose();
-								return;
-							}
-							resetGame();
-							
-							break;
+							dispose();
+							return;
 							
 						case GameUtils.GAME_VICTORY:
 							/* store the coordinates of my victory */
@@ -860,14 +831,8 @@ public class ClientGame extends JDialog {
 							
 							saveMoves();
 							RevengeDialog.main(GameUtils.GameStatus.WON, false, coordinates, moves);
-							
-							if(!RevengeDialog.ok) {
-								dispose();
-								return;
-							}
-							resetGame();
-							
-							break;
+							dispose();
+							return;
 							
 						case GameUtils.EXIT_MESSAGE:
 							AlertClass.showMsgBox(null, "Game Info", GameManager.getNickServer() + " left the game ;/");
@@ -879,7 +844,7 @@ public class ClientGame extends JDialog {
 							break;
 						}
 					} 
-					catch (Exception e) {
+					catch (IOException e) {
 						e.printStackTrace();
 						if(windowClosed) {
 							closeSocketAndWindow();

@@ -215,17 +215,6 @@ public class ServerGame extends JDialog {
 		}
 	}
 	
-	public void resetGame() {
-		try {
-			if(RevengeDialog.listenThread.isAlive()) {
-				RevengeDialog.listenThread.interrupt();
-			}
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	/**
 	 * Create the dialog
 	 */
@@ -826,15 +815,8 @@ public class ServerGame extends JDialog {
 								
 								saveMoves();
 								RevengeDialog.main(GameUtils.GameStatus.LOST, true, coordinates, moves);
-								
-								if(!RevengeDialog.ok) {
-									dispose();
-									return;
-								}
-								else {
-									resetGame();
-									break;
-								}
+								dispose();
+								return;
 							}
 							/* check the draw */
 							if(isDraw()) {
@@ -842,28 +824,16 @@ public class ServerGame extends JDialog {
 								
 								saveMoves();
 								RevengeDialog.main(GameUtils.GameStatus.DRAW, true, coordinates, moves);
-								
-								if(!RevengeDialog.ok) {
-									dispose();
-									return;
-								}
-								else {
-									resetGame();
-								}
+								dispose();
+								return;
 							}	
 							break;
 							
 						case GameUtils.GAME_DRAW:
 							saveMoves();
 							RevengeDialog.main(GameUtils.GameStatus.DRAW, true, coordinates, moves);
-							
-							if(!RevengeDialog.ok) {
-								dispose();
-								return;
-							}
-							resetGame();
-							
-							break;
+							dispose();
+							return;
 							
 						case GameUtils.GAME_VICTORY:
 							/* store the coordinates of my victory */
@@ -871,14 +841,8 @@ public class ServerGame extends JDialog {
 							
 							saveMoves();
 							RevengeDialog.main(GameUtils.GameStatus.WON, true, coordinates, moves);
-
-							if(!RevengeDialog.ok) {
-								dispose();
-								return;
-							}
-							resetGame();
-						
-							break;
+							dispose();
+							return;
 							
 						case GameUtils.EXIT_MESSAGE:
 							AlertClass.showMsgBox(null, "Game Info", GameManager.getNickClient() + " left the game ;/");
@@ -890,7 +854,7 @@ public class ServerGame extends JDialog {
 							break;
 						}
 					} 
-					catch (Exception e) {
+					catch (IOException e) {
 						e.printStackTrace();
 						if(windowClosed) {
 							closeSocketAndWindow();
